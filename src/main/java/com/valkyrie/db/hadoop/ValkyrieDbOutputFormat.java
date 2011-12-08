@@ -79,8 +79,11 @@ public class ValkyrieDbOutputFormat<K> extends
 		}
 
 		protected void initLocalStore() throws Exception {
+			String localTempDir = context.getConfiguration().get("valkyrie.hadoop.tmp.dir");
+			if (localTempDir == null)
+				localTempDir = context.getConfiguration().get("hadoop.tmp.dir");
 			this.localParentDir = FileUtils.createTempDir(
-					new File(this.context.getConfiguration().get("hadoop.tmp.dir")),
+					new File(localTempDir),
 					"krati-temp",
 					".krati");
 			this.localDataStoreDir = new File(localParentDir, "index.new");
