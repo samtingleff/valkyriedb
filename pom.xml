@@ -88,7 +88,7 @@
                                              <arg value="java:beans,hashcode"/>
                                              <arg value="-o"/>
                                              <arg value="target/generated-sources"/>
-                                             <arg value="src/main/thrift/s2s.thrift"/>
+                                             <arg value="src/main/thrift/valkyriedb.thrift"/>
                                          </exec>
                                          <delete>
                                              <fileset dir="src/main/java/com/valkyrie/db/gen" includes="**/*"/>

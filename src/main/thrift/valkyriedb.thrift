@@ -32,5 +32,5 @@ service ValkyrieDbS2SService {
 
  void setValue(1: SetRequest request);
 
- void deleteValue(1: DeleteRequest request)
+ void deleteValue(1: DeleteRequest request);
 }
