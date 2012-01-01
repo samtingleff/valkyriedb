@@ -21,7 +21,7 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ValkyrieDbS2SService {
+public class ValkyrieDbService {
 
   public interface Iface {
 

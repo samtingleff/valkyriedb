@@ -25,7 +25,7 @@ struct GetResponse {
  2: binary data
 }
 
-service ValkyrieDbS2SService {
+service ValkyrieDbService {
  bool exists(1: GetRequest request);
 
  GetResponse getValue(1: GetRequest request);

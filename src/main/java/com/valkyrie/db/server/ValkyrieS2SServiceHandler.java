@@ -11,9 +11,9 @@ import com.valkyrie.db.gen.DeleteRequest;
 import com.valkyrie.db.gen.GetRequest;
 import com.valkyrie.db.gen.GetResponse;
 import com.valkyrie.db.gen.SetRequest;
-import com.valkyrie.db.gen.ValkyrieDbS2SService;
+import com.valkyrie.db.gen.ValkyrieDbService;
 
-public class ValkyrieS2SServiceHandler implements ValkyrieDbS2SService.Iface {
+public class ValkyrieS2SServiceHandler implements ValkyrieDbService.Iface {
 	private static final ByteBuffer EMPTY_BYTE_BUFFER = ByteBuffer.wrap(new byte[0]);
 
 	private Log log = LogFactory.getLog(getClass());

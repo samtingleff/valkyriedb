@@ -17,7 +17,7 @@ import org.apache.thrift.transport.TTransportFactory;
 
 import com.mtbaker.client.Configuration;
 import com.mtbaker.client.provider.properties.PropertiesConfigurationClient;
-import com.valkyrie.db.gen.ValkyrieDbS2SService;
+import com.valkyrie.db.gen.ValkyrieDbService;
 
 public class ValkyrieDbServer {
 
@@ -78,7 +78,7 @@ public class ValkyrieDbServer {
 	}
 
 	private void initNetworkService() throws TTransportException, IOException {
-		ValkyrieDbS2SService.Processor processor = new ValkyrieDbS2SService.Processor(this.service);
+		ValkyrieDbService.Processor processor = new ValkyrieDbService.Processor(this.service);
 		TProcessorFactory processorFactory = new TProcessorFactory(processor);
 
 		TProtocolFactory pfactory = new TBinaryProtocol.Factory();

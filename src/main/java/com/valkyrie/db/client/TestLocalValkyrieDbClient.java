@@ -5,16 +5,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.Map.Entry;
-
-import krati.store.DataStore;
-import krati.util.IndexedIterator;
 
 import com.mtbaker.client.Configuration;
 import com.mtbaker.client.provider.properties.PropertiesConfigurationClient;
 import com.valkyrie.db.server.KratiLocalStore;
-import com.valkyrie.db.util.FNVHashFunction;
-import com.valkyrie.db.util.KeyPartitioner;
 
 public class TestLocalValkyrieDbClient {
 
