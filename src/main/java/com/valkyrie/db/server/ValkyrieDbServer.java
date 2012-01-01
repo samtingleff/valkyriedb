@@ -31,9 +31,9 @@ public class ValkyrieDbServer {
 
 	private PartitionedLocalStore localStorage;
 
-	private ValkyrieS2SServiceHandler s2s;
+	private ValkyrieS2SServiceHandler service;
 
-	private Thread s2sServiceThread;
+	private Thread serviceThread;
 
 	public ValkyrieDbServer() {
 		
@@ -42,16 +42,16 @@ public class ValkyrieDbServer {
 	public void init() throws Exception {
 		initConfiguration();
 		initLocalStorage();
-		initS2SServiceHandler();
-		initS2SNetworkService();
+		initServiceHandler();
+		initNetworkService();
 	}
 
 	public void start() {
-		this.s2sServiceThread.start();
+		this.serviceThread.start();
 	}
 
 	public void stop() {
-		this.s2sServiceThread.stop();
+		this.serviceThread.stop();
 	}
 
 	private void initConfiguration() throws IOException {
@@ -72,13 +72,13 @@ public class ValkyrieDbServer {
 		localStorage.init();
 	}
 
-	private void initS2SServiceHandler() {
-		s2s = new ValkyrieS2SServiceHandler(conf, localStorage);
-		s2s.init();
+	private void initServiceHandler() {
+		service = new ValkyrieS2SServiceHandler(conf, localStorage);
+		service.init();
 	}
 
-	private void initS2SNetworkService() throws TTransportException, IOException {
-		ValkyrieDbS2SService.Processor processor = new ValkyrieDbS2SService.Processor(this.s2s);
+	private void initNetworkService() throws TTransportException, IOException {
+		ValkyrieDbS2SService.Processor processor = new ValkyrieDbS2SService.Processor(this.service);
 		TProcessorFactory processorFactory = new TProcessorFactory(processor);
 
 		TProtocolFactory pfactory = new TBinaryProtocol.Factory();
@@ -96,11 +96,11 @@ public class ValkyrieDbServer {
 
 		final TServer server = new TThreadPoolServer(options);
 
-		this.s2sServiceThread = new Thread(new Runnable() {
+		this.serviceThread = new Thread(new Runnable() {
 			public void run() {
 				server.serve();
 			}
 		}, "ValkyrieDbService");
-		this.s2sServiceThread.setDaemon(conf.getBoolean("valkyrie.server.daemon", false));
+		this.serviceThread.setDaemon(conf.getBoolean("valkyrie.server.daemon", false));
 	}
 }
