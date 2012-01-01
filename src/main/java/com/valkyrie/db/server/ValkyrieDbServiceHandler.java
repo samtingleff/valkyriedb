@@ -13,7 +13,7 @@ import com.valkyrie.db.gen.GetResponse;
 import com.valkyrie.db.gen.SetRequest;
 import com.valkyrie.db.gen.ValkyrieDbService;
 
-public class ValkyrieS2SServiceHandler implements ValkyrieDbService.Iface {
+public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 	private static final ByteBuffer EMPTY_BYTE_BUFFER = ByteBuffer.wrap(new byte[0]);
 
 	private Log log = LogFactory.getLog(getClass());
@@ -22,7 +22,7 @@ public class ValkyrieS2SServiceHandler implements ValkyrieDbService.Iface {
 
 	private PartitionedLocalStore localStorage;
 
-	public ValkyrieS2SServiceHandler(Configuration conf, PartitionedLocalStore localStorage) {
+	public ValkyrieDbServiceHandler(Configuration conf, PartitionedLocalStore localStorage) {
 		this.conf = conf;
 		this.localStorage = localStorage;
 	}

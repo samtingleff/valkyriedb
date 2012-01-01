@@ -31,7 +31,7 @@ public class ValkyrieDbServer {
 
 	private PartitionedLocalStore localStorage;
 
-	private ValkyrieS2SServiceHandler service;
+	private ValkyrieDbServiceHandler service;
 
 	private Thread serviceThread;
 
@@ -73,7 +73,7 @@ public class ValkyrieDbServer {
 	}
 
 	private void initServiceHandler() {
-		service = new ValkyrieS2SServiceHandler(conf, localStorage);
+		service = new ValkyrieDbServiceHandler(conf, localStorage);
 		service.init();
 	}
 
