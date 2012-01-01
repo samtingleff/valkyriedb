@@ -17,8 +17,6 @@ import org.apache.thrift.transport.TTransportFactory;
 
 import com.mtbaker.client.Configuration;
 import com.mtbaker.client.provider.properties.PropertiesConfigurationClient;
-import com.othersonline.kv.gen.Constants;
-import com.othersonline.kv.gen.KeyValueService;
 import com.valkyrie.db.gen.ValkyrieDbS2SService;
 
 public class ValkyrieDbServer {
@@ -33,11 +31,7 @@ public class ValkyrieDbServer {
 
 	private PartitionedLocalStore localStorage;
 
-	private ThriftServiceHandler service;
-
 	private ValkyrieS2SServiceHandler s2s;
-
-	private Thread serviceThread;
 
 	private Thread s2sServiceThread;
 
@@ -50,17 +44,13 @@ public class ValkyrieDbServer {
 		initLocalStorage();
 		initS2SServiceHandler();
 		initS2SNetworkService();
-		initServiceHandler();
-		initNetworkService();
 	}
 
 	public void start() {
-		this.serviceThread.start();
 		this.s2sServiceThread.start();
 	}
 
 	public void stop() {
-		this.serviceThread.stop();
 		this.s2sServiceThread.stop();
 	}
 
@@ -82,40 +72,9 @@ public class ValkyrieDbServer {
 		localStorage.init();
 	}
 
-	private void initServiceHandler() throws Exception {
-		service = new ThriftServiceHandler(conf, localStorage);
-		service.init();
-	}
-
 	private void initS2SServiceHandler() {
 		s2s = new ValkyrieS2SServiceHandler(conf, localStorage);
 		s2s.init();
-	}
-
-	private void initNetworkService() throws TTransportException, IOException {
-		KeyValueService.Processor processor = new KeyValueService.Processor(this.service);
-		TProcessorFactory processorFactory = new TProcessorFactory(processor);
-
-		TProtocolFactory pfactory = new TBinaryProtocol.Factory();
-		TTransportFactory ttfactory = new TFramedTransport.Factory();
-		TServerSocket serverTransport = new TServerSocket(
-				conf.getInteger("valkyrie.server.port", Constants.DEFAULT_PORT));
-		TThreadPoolServer.Args options = new TThreadPoolServer.Args(serverTransport);
-		options.minWorkerThreads = conf.getInteger("valkyrie.server.minthreads", 1);
-		options.maxWorkerThreads = conf.getInteger("valkyrie.server.maxthreads", 100);
-		options.processor(processor);
-		options.processorFactory(processorFactory);
-		options.protocolFactory(pfactory);
-		options.transportFactory(ttfactory);
-
-		final TServer server = new TThreadPoolServer(options);
-
-		this.serviceThread = new Thread(new Runnable() {
-			public void run() {
-				server.serve();
-			}
-		}, "KeyValueService");
-		this.serviceThread.setDaemon(conf.getBoolean("valkyrie.server.daemon", false));
 	}
 
 	private void initS2SNetworkService() throws TTransportException, IOException {
@@ -125,11 +84,11 @@ public class ValkyrieDbServer {
 		TProtocolFactory pfactory = new TBinaryProtocol.Factory();
 		TTransportFactory ttfactory = new TFramedTransport.Factory();
 		TServerSocket serverTransport = new TServerSocket(
-				conf.getInteger("valkyrie.server.s2s.port",
+				conf.getInteger("valkyrie.server.port",
 						com.valkyrie.db.gen.Constants.DEFAULT_PORT));
 		TThreadPoolServer.Args options = new TThreadPoolServer.Args(serverTransport);
-		options.minWorkerThreads = conf.getInteger("valkyrie.server.s2s.minthreads", 1);
-		options.maxWorkerThreads = conf.getInteger("valkyrie.server.s2s.smaxthreads", 100);
+		options.minWorkerThreads = conf.getInteger("valkyrie.server.minthreads", 1);
+		options.maxWorkerThreads = conf.getInteger("valkyrie.server.smaxthreads", 100);
 		options.processor(processor);
 		options.processorFactory(processorFactory);
 		options.protocolFactory(pfactory);
