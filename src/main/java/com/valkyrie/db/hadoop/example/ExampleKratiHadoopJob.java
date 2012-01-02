@@ -17,7 +17,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import com.valkyrie.db.hadoop.FNVHadoopPartitioner;
+import com.valkyrie.db.hadoop.Murmur3HadoopPartitioner;
 import com.valkyrie.db.hadoop.ValkyrieDbOutputFormat;
 
 public class ExampleKratiHadoopJob extends Configured implements Tool {
@@ -35,7 +35,7 @@ public class ExampleKratiHadoopJob extends Configured implements Tool {
 		job.setJarByClass(getClass());
 		job.setMapperClass(ExampleMapper.class);
 		job.setReducerClass(ExampleReducer.class);
-		job.setPartitionerClass(FNVHadoopPartitioner.class);
+		job.setPartitionerClass(Murmur3HadoopPartitioner.class);
 		job.setNumReduceTasks(12); // should match valkyrie.partitions.count
 
 		job.setMapOutputKeyClass(Text.class);

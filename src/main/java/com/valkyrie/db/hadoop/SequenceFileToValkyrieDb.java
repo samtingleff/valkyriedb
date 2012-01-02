@@ -32,7 +32,7 @@ public class SequenceFileToValkyrieDb extends Configured implements Tool {
 
 		job.setMapperClass(Mapper.class);
 		job.setReducerClass(LastValueReducer.class);
-		job.setPartitionerClass(FNVHadoopPartitioner.class);
+		job.setPartitionerClass(Murmur3HadoopPartitioner.class);
 
 		// This needs to match valkyrie.partitions.count.
 		// Hopefully this is set on the command line: -Dmapred.reduce.tasks=12
