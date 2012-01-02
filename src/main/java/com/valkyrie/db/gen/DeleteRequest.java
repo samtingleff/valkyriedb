@@ -91,7 +91,7 @@ public class DeleteRequest implements org.apache.thrift.TBase<DeleteRequest, Del
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.KEY, new org.apache.thrift.meta_data.FieldMetaData("key", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.KEY, new org.apache.thrift.meta_data.FieldMetaData("key", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Key.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(DeleteRequest.class, metaDataMap);
@@ -303,6 +303,10 @@ public class DeleteRequest implements org.apache.thrift.TBase<DeleteRequest, Del
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
+    if (!isSetKey()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' is unset! Struct:" + toString());
+    }
+
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {

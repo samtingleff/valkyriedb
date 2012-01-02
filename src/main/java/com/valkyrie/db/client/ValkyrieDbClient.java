@@ -103,7 +103,10 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 		try {
 			tc = getConnection(key);
 			int partition = keyPartitioner.getPartition(conf, key.getBytes());
-			return tc.kv.exists(new GetRequest(new Key(ByteBuffer.wrap(key.getBytes()), partition)));
+			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
+			k.setPartition(partition);
+			GetRequest gr = new GetRequest(k);
+			return tc.kv.exists(gr);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new KeyValueStoreException();
@@ -218,7 +221,10 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 		TConnection tc = getConnection(key);
 		try {
 			int partition = keyPartitioner.getPartition(conf, key.getBytes());
-			GetResponse r = tc.kv.getValue(new GetRequest(new Key(ByteBuffer.wrap(key.getBytes()), partition)));
+			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
+			k.setPartition(partition);
+			GetRequest request = new GetRequest(k);
+			GetResponse r = tc.kv.getValue(request);
 			GetResult gr = new GetResult(r.isExists(), r.bufferForData());
 			return gr;
 		} finally {
@@ -327,7 +333,10 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 			try {
 				byte[] k = "foo".getBytes();
 				int partition = keyPartitioner.getPartition(conf, k);
-				boolean b = tc.kv.exists(new GetRequest(new Key(ByteBuffer.wrap(k), partition)));
+				Key keyK = new Key(ByteBuffer.wrap(k));
+				keyK.setPartition(partition);
+				GetRequest request = new GetRequest(keyK);
+				boolean b = tc.kv.exists(request);
 				result = true;
 			} catch(Exception e) {
 			}

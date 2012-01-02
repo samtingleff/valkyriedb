@@ -98,9 +98,9 @@ public class Key implements org.apache.thrift.TBase<Key, Key._Fields>, java.io.S
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.BYTES, new org.apache.thrift.meta_data.FieldMetaData("bytes", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.BYTES, new org.apache.thrift.meta_data.FieldMetaData("bytes", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
-    tmpMap.put(_Fields.PARTITION, new org.apache.thrift.meta_data.FieldMetaData("partition", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PARTITION, new org.apache.thrift.meta_data.FieldMetaData("partition", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Key.class, metaDataMap);
@@ -110,13 +110,10 @@ public class Key implements org.apache.thrift.TBase<Key, Key._Fields>, java.io.S
   }
 
   public Key(
-    ByteBuffer bytes,
-    int partition)
+    ByteBuffer bytes)
   {
     this();
     this.bytes = bytes;
-    this.partition = partition;
-    setPartitionIsSet(true);
   }
 
   /**
@@ -267,8 +264,8 @@ public class Key implements org.apache.thrift.TBase<Key, Key._Fields>, java.io.S
         return false;
     }
 
-    boolean this_present_partition = true;
-    boolean that_present_partition = true;
+    boolean this_present_partition = true && this.isSetPartition();
+    boolean that_present_partition = true && that.isSetPartition();
     if (this_present_partition || that_present_partition) {
       if (!(this_present_partition && that_present_partition))
         return false;
@@ -288,7 +285,7 @@ public class Key implements org.apache.thrift.TBase<Key, Key._Fields>, java.io.S
     if (present_bytes)
       builder.append(bytes);
 
-    boolean present_partition = true;
+    boolean present_partition = true && (isSetPartition());
     builder.append(present_partition);
     if (present_partition)
       builder.append(partition);
@@ -374,9 +371,11 @@ public class Key implements org.apache.thrift.TBase<Key, Key._Fields>, java.io.S
       oprot.writeBinary(this.bytes);
       oprot.writeFieldEnd();
     }
-    oprot.writeFieldBegin(PARTITION_FIELD_DESC);
-    oprot.writeI32(this.partition);
-    oprot.writeFieldEnd();
+    if (isSetPartition()) {
+      oprot.writeFieldBegin(PARTITION_FIELD_DESC);
+      oprot.writeI32(this.partition);
+      oprot.writeFieldEnd();
+    }
     oprot.writeFieldStop();
     oprot.writeStructEnd();
   }
@@ -393,16 +392,22 @@ public class Key implements org.apache.thrift.TBase<Key, Key._Fields>, java.io.S
       org.apache.thrift.TBaseHelper.toString(this.bytes, sb);
     }
     first = false;
-    if (!first) sb.append(", ");
-    sb.append("partition:");
-    sb.append(this.partition);
-    first = false;
+    if (isSetPartition()) {
+      if (!first) sb.append(", ");
+      sb.append("partition:");
+      sb.append(this.partition);
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
+    if (!isSetBytes()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'bytes' is unset! Struct:" + toString());
+    }
+
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
