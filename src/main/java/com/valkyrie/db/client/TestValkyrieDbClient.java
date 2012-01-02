@@ -12,7 +12,7 @@ public class TestValkyrieDbClient {
 		
 		int nulls = 0, successes = 0, exceptions = 0;
 		int numKeys = Integer.parseInt(args[0]);
-		for (int i = 1000; i < numKeys; ++i) {
+		for (int i = 0; i < numKeys; ++i) {
 			try {
 				String k = Integer.toString(i);
 				Object obj = client.get(k, transcoder);

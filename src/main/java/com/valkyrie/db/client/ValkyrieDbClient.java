@@ -3,6 +3,7 @@ package com.valkyrie.db.client;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +27,11 @@ import com.othersonline.kv.KeyValueStore;
 import com.othersonline.kv.KeyValueStoreException;
 import com.othersonline.kv.gen.Constants;
 import com.othersonline.kv.gen.GetResult;
-import com.othersonline.kv.gen.KeyValueService;
 import com.othersonline.kv.transcoder.Transcoder;
+import com.valkyrie.db.gen.GetRequest;
+import com.valkyrie.db.gen.GetResponse;
+import com.valkyrie.db.gen.Key;
+import com.valkyrie.db.gen.ValkyrieDbService;
 import com.valkyrie.db.util.KeyPartitioner;
 import com.valkyrie.db.util.KeyPartitionerFactory;
 
@@ -98,7 +102,8 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 		TConnection tc = null;
 		try {
 			tc = getConnection(key);
-			return tc.kv.exists(key);
+			int partition = keyPartitioner.getPartition(conf, key.getBytes());
+			return tc.kv.exists(new GetRequest(new Key(ByteBuffer.wrap(key.getBytes()), partition)));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new KeyValueStoreException();
@@ -212,8 +217,10 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	protected GetResult getValue(String key) throws Exception {
 		TConnection tc = getConnection(key);
 		try {
-			GetResult r = tc.kv.getValue(key);
-			return r;
+			int partition = keyPartitioner.getPartition(conf, key.getBytes());
+			GetResponse r = tc.kv.getValue(new GetRequest(new Key(ByteBuffer.wrap(key.getBytes()), partition)));
+			GetResult gr = new GetResult(r.isExists(), r.bufferForData());
+			return gr;
 		} finally {
 			returnConnection(tc);
 		}
@@ -277,7 +284,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 
 		private TProtocol protocol;
 
-		private KeyValueService.Iface kv;
+		private ValkyrieDbService.Iface kv;
 
 		public TConnection(String server) {
 			this.server = server;
@@ -285,7 +292,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 			socket = new TSocket(split[0], Integer.parseInt(split[1]));
 			transport = new TFramedTransport(socket);
 			protocol = new TBinaryProtocol(transport);
-			kv = new KeyValueService.Client(protocol);
+			kv = new ValkyrieDbService.Client(protocol);
 		}
 
 		public void open() throws TTransportException {
@@ -318,7 +325,9 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 			TConnection tc = (TConnection) obj;
 			boolean result = false;
 			try {
-				boolean b = tc.kv.exists("foo");
+				byte[] k = "foo".getBytes();
+				int partition = keyPartitioner.getPartition(conf, k);
+				boolean b = tc.kv.exists(new GetRequest(new Key(ByteBuffer.wrap(k), partition)));
 				result = true;
 			} catch(Exception e) {
 			}
