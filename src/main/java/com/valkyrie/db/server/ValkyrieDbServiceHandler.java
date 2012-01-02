@@ -6,7 +6,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.TException;
 
-import com.mtbaker.client.Configuration;
 import com.valkyrie.db.gen.DeleteRequest;
 import com.valkyrie.db.gen.GetRequest;
 import com.valkyrie.db.gen.GetResponse;
@@ -18,12 +17,9 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 
 	private Log log = LogFactory.getLog(getClass());
 
-	private Configuration conf;
-
 	private PartitionedLocalStore localStorage;
 
-	public ValkyrieDbServiceHandler(Configuration conf, PartitionedLocalStore localStorage) {
-		this.conf = conf;
+	public ValkyrieDbServiceHandler(PartitionedLocalStore localStorage) {
 		this.localStorage = localStorage;
 	}
 

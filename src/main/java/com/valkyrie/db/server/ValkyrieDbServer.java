@@ -73,7 +73,7 @@ public class ValkyrieDbServer {
 	}
 
 	private void initServiceHandler() {
-		service = new ValkyrieDbServiceHandler(conf, localStorage);
+		service = new ValkyrieDbServiceHandler(localStorage);
 		service.init();
 	}
 
