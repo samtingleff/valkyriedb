@@ -1,14 +1,12 @@
 package com.valkyrie.db.client;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +19,9 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransportException;
 
 import com.mtbaker.client.Configuration;
-import com.mtbaker.client.provider.properties.PropertiesConfigurationClient;
+import com.mtbaker.client.ConfigurationClient;
+import com.mtbaker.client.provider.io.FileInputStreamSource;
+import com.mtbaker.client.provider.xml.XmlConfigurationClient;
 import com.othersonline.kv.BaseKeyValueStore;
 import com.othersonline.kv.KeyValueStore;
 import com.othersonline.kv.KeyValueStoreException;
@@ -61,7 +61,9 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 
 	protected Log log = LogFactory.getLog(getClass());
 
-	protected Configuration conf;
+	protected ConfigurationClient conf;
+
+	protected Configuration serverConf;
 
 	protected GenericKeyedObjectPool pool;
 
@@ -102,7 +104,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 		TConnection tc = null;
 		try {
 			tc = getConnection(key);
-			int partition = keyPartitioner.getPartition(conf, key.getBytes());
+			int partition = keyPartitioner.getPartition(serverConf, key.getBytes());
 			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
 			k.setPartition(partition);
 			GetRequest gr = new GetRequest(k);
@@ -220,7 +222,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	protected GetResult getValue(String key) throws Exception {
 		TConnection tc = getConnection(key);
 		try {
-			int partition = keyPartitioner.getPartition(conf, key.getBytes());
+			int partition = keyPartitioner.getPartition(serverConf, key.getBytes());
 			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
 			k.setPartition(partition);
 			GetRequest request = new GetRequest(k);
@@ -233,16 +235,9 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	}
 
 	protected void initConfiguration() throws IOException {
-		Properties props = new Properties();
-		InputStream is = new FileInputStream("/etc/valkyrie.properties");
-		try {
-			props.load(is);
-			PropertiesConfigurationClient client = new PropertiesConfigurationClient(
-					props);
-			conf = client.getConfiguration(null, 10);
-		} finally {
-			is.close();
-		}
+		File f = new File("/etc/valkyriedb.xml");
+		conf = new XmlConfigurationClient(new FileInputStreamSource(f));
+		serverConf = conf.getConfiguration("server", 1000*60*10);
 	}
 
 	protected void initKeyPartitioner() throws IOException {
@@ -255,7 +250,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 
 	protected TConnection getConnection(String key) throws Exception {
 		log.trace("getConnection()");
-		int partition = keyPartitioner.getPartition(conf, key.getBytes());
+		int partition = keyPartitioner.getPartition(serverConf, key.getBytes());
 		if (log.isDebugEnabled())
 			log.debug("Got partition " + partition + " for key " + key);
 		String server = getBackend(partition);
@@ -275,7 +270,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	}
 
 	protected String getBackend(int partition) throws IOException {
-		List<String> servers = conf.getStringList("valkyrie.servers",
+		List<String> servers = serverConf.getStringList("servers",
 				Collections.singletonList("localhost:" + Constants.DEFAULT_PORT));
 		int host = Math.abs(partition % servers.size());
 		return servers.get(host);
@@ -332,7 +327,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 			boolean result = false;
 			try {
 				byte[] k = "foo".getBytes();
-				int partition = keyPartitioner.getPartition(conf, k);
+				int partition = keyPartitioner.getPartition(serverConf, k);
 				Key keyK = new Key(ByteBuffer.wrap(k));
 				keyK.setPartition(partition);
 				GetRequest request = new GetRequest(keyK);
