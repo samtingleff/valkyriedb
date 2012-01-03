@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +12,12 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.mtbaker.client.Configuration;
 import com.mtbaker.client.ConfigurationClient;
 import com.mtbaker.client.annotations.Configurable;
 import com.mtbaker.client.annotations.ConfigurableField;
 import com.mtbaker.client.annotations.ConfigurationInjector;
 
-@Configurable("krati")
+@Configurable("server")
 public class PartitionedLocalStore {
 	private Log log = LogFactory.getLog(getClass());
 

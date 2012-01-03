@@ -11,7 +11,7 @@ import krati.store.DataStore;
 import krati.store.DynamicDataStore;
 import krati.util.FnvHashFunction;
 
-@Configurable("krati")
+@Configurable("server")
 public class KratiLocalStore {
 
 	private DataStore<byte[], byte[]> store;
