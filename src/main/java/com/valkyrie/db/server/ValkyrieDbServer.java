@@ -1,10 +1,7 @@
 package com.valkyrie.db.server;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -59,15 +56,8 @@ public class ValkyrieDbServer {
 	}
 
 	private void initConfiguration() throws IOException {
-		Properties props = new Properties();
 		File f = new File("/etc/valkyriedb.xml");
-		InputStream is = new FileInputStream("/etc/valkyrie.properties");
-		try {
-			props.load(is);
-			conf = new XmlConfigurationClient(new FileInputStreamSource(f));
-		} finally {
-			is.close();
-		}
+		conf = new XmlConfigurationClient(new FileInputStreamSource(f));
 	}
 
 	private void initLocalStorage() throws Exception {
@@ -90,11 +80,11 @@ public class ValkyrieDbServer {
 		TProtocolFactory pfactory = new TBinaryProtocol.Factory();
 		TTransportFactory ttfactory = new TFramedTransport.Factory();
 		TServerSocket serverTransport = new TServerSocket(
-				cc.getInteger("valkyrie.server.port",
+				cc.getInteger("port",
 						com.valkyrie.db.gen.Constants.DEFAULT_PORT));
 		TThreadPoolServer.Args options = new TThreadPoolServer.Args(serverTransport);
-		options.minWorkerThreads = cc.getInteger("valkyrie.server.minthreads", 1);
-		options.maxWorkerThreads = cc.getInteger("valkyrie.server.smaxthreads", 100);
+		options.minWorkerThreads = cc.getInteger("minthreads", 1);
+		options.maxWorkerThreads = cc.getInteger("maxthreads", 10);
 		options.processor(processor);
 		options.processorFactory(processorFactory);
 		options.protocolFactory(pfactory);
@@ -107,6 +97,6 @@ public class ValkyrieDbServer {
 				server.serve();
 			}
 		}, "ValkyrieDbService");
-		this.serviceThread.setDaemon(cc.getBoolean("valkyrie.server.daemon", false));
+		this.serviceThread.setDaemon(cc.getBoolean("daemonthread", false));
 	}
 }
