@@ -3,57 +3,61 @@ package com.valkyrie.db.server;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.hadoop.conf.Configuration;
+import com.mtbaker.client.annotations.Configurable;
+import com.mtbaker.client.annotations.ConfigurableField;
 
 import krati.core.segment.ChannelSegmentFactory;
 import krati.store.DataStore;
 import krati.store.DynamicDataStore;
 import krati.util.FnvHashFunction;
 
+@Configurable("krati")
 public class KratiLocalStore {
 
 	private DataStore<byte[], byte[]> store;
 
-	public KratiLocalStore(File dir,
+	@ConfigurableField("dir")
+	private String dir;
+
+	@ConfigurableField("initLevel")
+	private int initLevel = 5;
+
+	@ConfigurableField("batchSize")
+	private int batchSize = 100;
+
+	@ConfigurableField("numSyncBatches")
+	private int numSyncBatches = 5;
+
+	@ConfigurableField("segmentFileSizeMB")
+	private int segmentFileSizeMB = 64;
+
+	@ConfigurableField("segmentCompactFactor")
+	private double segmentCompactFactor = 0.5;
+
+	@ConfigurableField("hashLoadFactor")
+	private double hashLoadFactor = 0.75;
+
+	public KratiLocalStore(String dir,
 			int initLevel,
 			int batchSize,
 			int numSyncBatches,
 			int segmentFileSizeMB,
 			double segmentCompactFactor,
 			double hashLoadFactor) throws Exception {
-		store = createDataStore(dir,
-				initLevel,
-				batchSize,
-				numSyncBatches,
-				segmentFileSizeMB,
-				segmentCompactFactor,
-				hashLoadFactor);
+		this.dir = dir;
+		this.initLevel = initLevel;
+		this.batchSize = batchSize;
+		this.numSyncBatches = numSyncBatches;
+		this.segmentFileSizeMB = segmentFileSizeMB;
+		this.segmentCompactFactor = segmentCompactFactor;
+		this.hashLoadFactor = hashLoadFactor;
 	}
 
-	public KratiLocalStore(File dir, Configuration conf) throws Exception {
-		int initLevel = conf.getInt("valkyriedb.krati.initLevel", 5);
-		int batchSize = conf.getInt("valkyriedb.krati.batchSize", 100);
-		int numSyncBatches = conf.getInt("valkyriedb.krati.numSyncBatches", 5);
-		int segmentFileSizeMB = conf.getInt("valkyriedb.krati.segmentFileSizeMB", 256);
-		double segmentCompactFactor = conf.getFloat("valkyriedb.krati.segmentCompactFactor", .5f);
-		double hashLoadFactor = conf.getFloat("valkyriedb.krati.hashLoadFactor", .75f);
-		store = createDataStore(dir,
-				initLevel,
-				batchSize,
-				numSyncBatches,
-				segmentFileSizeMB,
-				segmentCompactFactor,
-				hashLoadFactor);
+	public KratiLocalStore() {
 	}
 
-	public KratiLocalStore(File dir, com.mtbaker.client.Configuration conf) throws Exception {
-		int initLevel = conf.getInteger("valkyriedb.krati.initLevel", 5);
-		int batchSize = conf.getInteger("valkyriedb.krati.batchSize", 100);
-		int numSyncBatches = conf.getInteger("valkyriedb.krati.numSyncBatches", 5);
-		int segmentFileSizeMB = conf.getInteger("valkyriedb.krati.segmentFileSizeMB", 256);
-		double segmentCompactFactor = conf.getDouble("valkyriedb.krati.segmentCompactFactor", .5);
-		double hashLoadFactor = conf.getDouble("valkyriedb.krati.hashLoadFactor", .75);
-		store = createDataStore(dir,
+	public void init() throws Exception {
+		store = createDataStore(new File(dir),
 				initLevel,
 				batchSize,
 				numSyncBatches,
@@ -122,5 +126,33 @@ public class KratiLocalStore {
 				segmentCompactFactor,
 				hashLoadFactor,
 				new FnvHashFunction());
+	}
+
+	public void setDir(String dir) {
+		this.dir = dir;
+	}
+
+	public void setInitLevel(int initLevel) {
+		this.initLevel = initLevel;
+	}
+
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
+
+	public void setNumSyncBatches(int numSyncBatches) {
+		this.numSyncBatches = numSyncBatches;
+	}
+
+	public void setSegmentFileSizeMB(int segmentFileSizeMB) {
+		this.segmentFileSizeMB = segmentFileSizeMB;
+	}
+
+	public void setSegmentCompactFactor(double segmentCompactFactor) {
+		this.segmentCompactFactor = segmentCompactFactor;
+	}
+
+	public void setHashLoadFactor(double hashLoadFactor) {
+		this.hashLoadFactor = hashLoadFactor;
 	}
 }

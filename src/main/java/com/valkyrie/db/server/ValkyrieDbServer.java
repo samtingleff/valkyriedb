@@ -1,5 +1,6 @@
 package com.valkyrie.db.server;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +17,10 @@ import org.apache.thrift.transport.TTransportException;
 import org.apache.thrift.transport.TTransportFactory;
 
 import com.mtbaker.client.Configuration;
-import com.mtbaker.client.provider.properties.PropertiesConfigurationClient;
+import com.mtbaker.client.ConfigurationClient;
+import com.mtbaker.client.annotations.ConfigurationInjector;
+import com.mtbaker.client.provider.io.FileInputStreamSource;
+import com.mtbaker.client.provider.xml.XmlConfigurationClient;
 import com.valkyrie.db.gen.ValkyrieDbService;
 
 public class ValkyrieDbServer {
@@ -27,7 +31,7 @@ public class ValkyrieDbServer {
 		db.start();
 	}
 
-	private Configuration conf;
+	private ConfigurationClient conf;
 
 	private PartitionedLocalStore localStorage;
 
@@ -56,12 +60,11 @@ public class ValkyrieDbServer {
 
 	private void initConfiguration() throws IOException {
 		Properties props = new Properties();
+		File f = new File("/etc/valkyriedb.xml");
 		InputStream is = new FileInputStream("/etc/valkyrie.properties");
 		try {
 			props.load(is);
-			PropertiesConfigurationClient client = new PropertiesConfigurationClient(
-					props);
-			conf = client.getConfiguration(null, 10);
+			conf = new XmlConfigurationClient(new FileInputStreamSource(f));
 		} finally {
 			is.close();
 		}
@@ -69,6 +72,8 @@ public class ValkyrieDbServer {
 
 	private void initLocalStorage() throws Exception {
 		localStorage = new PartitionedLocalStore(conf);
+		ConfigurationInjector injector = new ConfigurationInjector(this.conf);
+		injector.inject(localStorage);
 		localStorage.init();
 	}
 
@@ -78,17 +83,18 @@ public class ValkyrieDbServer {
 	}
 
 	private void initNetworkService() throws TTransportException, IOException {
+		Configuration cc = conf.getConfiguration("server", 1000*60*60);
 		ValkyrieDbService.Processor processor = new ValkyrieDbService.Processor(this.service);
 		TProcessorFactory processorFactory = new TProcessorFactory(processor);
 
 		TProtocolFactory pfactory = new TBinaryProtocol.Factory();
 		TTransportFactory ttfactory = new TFramedTransport.Factory();
 		TServerSocket serverTransport = new TServerSocket(
-				conf.getInteger("valkyrie.server.port",
+				cc.getInteger("valkyrie.server.port",
 						com.valkyrie.db.gen.Constants.DEFAULT_PORT));
 		TThreadPoolServer.Args options = new TThreadPoolServer.Args(serverTransport);
-		options.minWorkerThreads = conf.getInteger("valkyrie.server.minthreads", 1);
-		options.maxWorkerThreads = conf.getInteger("valkyrie.server.smaxthreads", 100);
+		options.minWorkerThreads = cc.getInteger("valkyrie.server.minthreads", 1);
+		options.maxWorkerThreads = cc.getInteger("valkyrie.server.smaxthreads", 100);
 		options.processor(processor);
 		options.processorFactory(processorFactory);
 		options.protocolFactory(pfactory);
@@ -101,6 +107,6 @@ public class ValkyrieDbServer {
 				server.serve();
 			}
 		}, "ValkyrieDbService");
-		this.serviceThread.setDaemon(conf.getBoolean("valkyrie.server.daemon", false));
+		this.serviceThread.setDaemon(cc.getBoolean("valkyrie.server.daemon", false));
 	}
 }

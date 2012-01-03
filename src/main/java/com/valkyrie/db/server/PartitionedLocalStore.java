@@ -14,15 +14,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mtbaker.client.Configuration;
+import com.mtbaker.client.ConfigurationClient;
+import com.mtbaker.client.annotations.Configurable;
+import com.mtbaker.client.annotations.ConfigurableField;
+import com.mtbaker.client.annotations.ConfigurationInjector;
 
+@Configurable("krati")
 public class PartitionedLocalStore {
 	private Log log = LogFactory.getLog(getClass());
 
-	private Configuration conf;
+	@ConfigurableField(value="dirs", type=String.class)
+	private List<String> stringDirs;
+
+	private ConfigurationClient conf;
 
 	private Map<Integer, KratiLocalPartition> partitions;
 
-	public PartitionedLocalStore(Configuration conf) {
+	public PartitionedLocalStore(ConfigurationClient conf) {
 		this.conf = conf;
 	}
 
@@ -48,8 +56,6 @@ public class PartitionedLocalStore {
 
 	protected void initStorageBackend() throws Exception {
 		log.trace("initStorageBackend()");
-		List<String> stringDirs = conf.getStringList("valkyrie.server.dirs",
-				Collections.EMPTY_LIST);
 		partitions = new HashMap<Integer, KratiLocalPartition>(stringDirs
 				.size());
 		for (String dir : stringDirs) {
@@ -78,13 +84,21 @@ public class PartitionedLocalStore {
 				props.load(fis);
 				Integer partitionid = new Integer(Integer.parseInt(props
 						.getProperty("partition.id")));
-				KratiLocalStore ks = new KratiLocalStore(indexDir, this.conf);
+				KratiLocalStore ks = new KratiLocalStore();
+				ks.setDir(indexDir.getAbsolutePath());
+				inject(ks);
+				ks.init();
 				result.add(new KratiLocalPartition(ks, partitionid));
 			} finally {
 				fis.close();
 			}
 		}
 		return result;
+	}
+
+	private void inject(KratiLocalStore ks) throws IOException {
+		ConfigurationInjector injector = new ConfigurationInjector(this.conf);
+		injector.inject(ks);
 	}
 
 	private static class KratiLocalPartition {

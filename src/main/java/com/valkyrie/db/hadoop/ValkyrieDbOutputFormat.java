@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -87,7 +88,15 @@ public class ValkyrieDbOutputFormat<K> extends
 					"krati-temp",
 					".krati");
 			this.localDataStoreDir = new File(localParentDir, "index.new");
-			krati = new KratiLocalStore(localDataStoreDir, context.getConfiguration());
+			Configuration cc = context.getConfiguration();
+			krati = new KratiLocalStore(localDataStoreDir.getAbsolutePath(),
+					cc.getInt("krati.initLevel", 1),
+					cc.getInt("krati.batchSize", 100),
+					cc.getInt("krati.numSyncBatches", 5),
+					cc.getInt("krati.segmentFileSizeMB", 64),
+					cc.getFloat("krati.segmentCompactFactor", 0.5f),
+					cc.getFloat("krati.hashLoadFactor", 0.75f));
+			krati.init();
 		}
 
 		protected void writePartitionId() throws Exception {
