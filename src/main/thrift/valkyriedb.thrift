@@ -30,6 +30,19 @@ struct IFunction {
  2: optional string code
 }
 
+struct MapReduceRequest {
+ 1: optional IFunction mapper,
+ 2: optional IFunction combiner,
+ 3: optional IFunction reducer,
+ 4: optional IFunction serializer
+}
+
+struct MapReduceResponse {
+ 1: required bool exists,
+ 2: optional binary data,
+ 3: optional map<string, i64> counters
+}
+
 service ValkyrieDbService {
  bool exists(1: GetRequest request);
 
@@ -42,4 +55,6 @@ service ValkyrieDbService {
  string compile(1: IFunction fn);
 
  void iterate(1: IFunction fn);
+
+ MapReduceResponse mapreduce(1: MapReduceRequest fns);
 }

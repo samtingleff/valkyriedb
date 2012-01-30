@@ -27,6 +27,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  void deleteValue(DeleteRequest request)'
   print '  string compile(IFunction fn)'
   print '  void iterate(IFunction fn)'
+  print '  MapReduceResponse mapreduce(MapReduceRequest fns)'
   print ''
   sys.exit(0)
 
@@ -112,6 +113,12 @@ elif cmd == 'iterate':
     print 'iterate requires 1 args'
     sys.exit(1)
   pp.pprint(client.iterate(eval(args[0]),))
+
+elif cmd == 'mapreduce':
+  if len(args) != 1:
+    print 'mapreduce requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.mapreduce(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd

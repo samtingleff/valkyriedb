@@ -433,3 +433,197 @@ class IFunction(object):
 
   def __ne__(self, other):
     return not (self == other)
+
+class MapReduceRequest(object):
+  """
+  Attributes:
+   - mapper
+   - combiner
+   - reducer
+   - serializer
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'mapper', (IFunction, IFunction.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'combiner', (IFunction, IFunction.thrift_spec), None, ), # 2
+    (3, TType.STRUCT, 'reducer', (IFunction, IFunction.thrift_spec), None, ), # 3
+    (4, TType.STRUCT, 'serializer', (IFunction, IFunction.thrift_spec), None, ), # 4
+  )
+
+  def __init__(self, mapper=None, combiner=None, reducer=None, serializer=None,):
+    self.mapper = mapper
+    self.combiner = combiner
+    self.reducer = reducer
+    self.serializer = serializer
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.mapper = IFunction()
+          self.mapper.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.combiner = IFunction()
+          self.combiner.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.STRUCT:
+          self.reducer = IFunction()
+          self.reducer.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRUCT:
+          self.serializer = IFunction()
+          self.serializer.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('MapReduceRequest')
+    if self.mapper != None:
+      oprot.writeFieldBegin('mapper', TType.STRUCT, 1)
+      self.mapper.write(oprot)
+      oprot.writeFieldEnd()
+    if self.combiner != None:
+      oprot.writeFieldBegin('combiner', TType.STRUCT, 2)
+      self.combiner.write(oprot)
+      oprot.writeFieldEnd()
+    if self.reducer != None:
+      oprot.writeFieldBegin('reducer', TType.STRUCT, 3)
+      self.reducer.write(oprot)
+      oprot.writeFieldEnd()
+    if self.serializer != None:
+      oprot.writeFieldBegin('serializer', TType.STRUCT, 4)
+      self.serializer.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class MapReduceResponse(object):
+  """
+  Attributes:
+   - exists
+   - data
+   - counters
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.BOOL, 'exists', None, None, ), # 1
+    (2, TType.STRING, 'data', None, None, ), # 2
+    (3, TType.MAP, 'counters', (TType.STRING,None,TType.I64,None), None, ), # 3
+  )
+
+  def __init__(self, exists=None, data=None, counters=None,):
+    self.exists = exists
+    self.data = data
+    self.counters = counters
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.BOOL:
+          self.exists = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRING:
+          self.data = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.MAP:
+          self.counters = {}
+          (_ktype1, _vtype2, _size0 ) = iprot.readMapBegin() 
+          for _i4 in xrange(_size0):
+            _key5 = iprot.readString();
+            _val6 = iprot.readI64();
+            self.counters[_key5] = _val6
+          iprot.readMapEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('MapReduceResponse')
+    if self.exists != None:
+      oprot.writeFieldBegin('exists', TType.BOOL, 1)
+      oprot.writeBool(self.exists)
+      oprot.writeFieldEnd()
+    if self.data != None:
+      oprot.writeFieldBegin('data', TType.STRING, 2)
+      oprot.writeString(self.data)
+      oprot.writeFieldEnd()
+    if self.counters != None:
+      oprot.writeFieldBegin('counters', TType.MAP, 3)
+      oprot.writeMapBegin(TType.STRING, TType.I64, len(self.counters))
+      for kiter7,viter8 in self.counters.items():
+        oprot.writeString(kiter7)
+        oprot.writeI64(viter8)
+      oprot.writeMapEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+    def validate(self):
+      if self.exists is None:
+        raise TProtocol.TProtocolException(message='Required field exists is unset!')
+      return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
