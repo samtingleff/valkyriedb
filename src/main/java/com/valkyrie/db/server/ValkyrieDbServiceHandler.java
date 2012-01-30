@@ -114,11 +114,9 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 	@Override
 	public void iterate(IFunction fn) throws TException {
 		log.trace("iterate()");
-		IFn func = null;
-		if (fn.getCode() == null) {
-			func = funcs.get(fn.getName());
-		} else
-			func = scripting.compile(fn.getCode());
+		IFn func = (fn.getCode() == null)
+				? funcs.get(fn.getName())
+				: scripting.compile(fn.getCode());
 
 		if (func == null)
 			throw new TException("No matching function registered");
