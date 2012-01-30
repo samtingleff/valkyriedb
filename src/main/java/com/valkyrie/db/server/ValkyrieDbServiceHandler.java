@@ -104,13 +104,10 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 	public String compile(IFunction fn) throws TException {
 		log.trace("compile()");
 		IFn func = scripting.compile(fn.getCode());
-		String id = fn.getName();
-		if (fn.getName() != null)
-			funcs.put(fn.getName(), func);
-		else {
-			id = UUID.randomUUID().toString();
-			funcs.put(id, func);
-		}
+		String id = (fn.getName() == null)
+				? UUID.randomUUID().toString()
+				: fn.getName();
+		funcs.put(id, func);
 		return id;
 	}
 
