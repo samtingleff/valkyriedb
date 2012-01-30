@@ -2,6 +2,8 @@ package com.valkyrie.db.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.mtbaker.client.annotations.Configurable;
 import com.mtbaker.client.annotations.ConfigurableField;
@@ -12,7 +14,7 @@ import krati.store.DynamicDataStore;
 import krati.util.FnvHashFunction;
 
 @Configurable("server")
-public class KratiLocalStore {
+public class KratiLocalStore implements Iterable<Map.Entry<byte[], byte[]>> {
 
 	private DataStore<byte[], byte[]> store;
 
@@ -92,6 +94,10 @@ public class KratiLocalStore {
 
 	public void close() throws IOException {
 		store.close();
+	}
+
+	public Iterator<Map.Entry<byte[], byte[]>> iterator() {
+		return store.iterator();
 	}
 
 	protected DataStore<byte[], byte[]> createDataStore(File dir,

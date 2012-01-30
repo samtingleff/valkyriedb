@@ -25,6 +25,8 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print '  GetResponse getValue(GetRequest request)'
   print '  void setValue(SetRequest request)'
   print '  void deleteValue(DeleteRequest request)'
+  print '  string compile(IFunction fn)'
+  print '  void iterate(IFunction fn)'
   print ''
   sys.exit(0)
 
@@ -98,6 +100,18 @@ elif cmd == 'deleteValue':
     print 'deleteValue requires 1 args'
     sys.exit(1)
   pp.pprint(client.deleteValue(eval(args[0]),))
+
+elif cmd == 'compile':
+  if len(args) != 1:
+    print 'compile requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.compile(eval(args[0]),))
+
+elif cmd == 'iterate':
+  if len(args) != 1:
+    print 'iterate requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.iterate(eval(args[0]),))
 
 else:
   print 'Unrecognized method %s' % cmd

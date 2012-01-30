@@ -5,9 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +20,7 @@ import com.mtbaker.client.annotations.ConfigurableField;
 import com.mtbaker.client.annotations.ConfigurationInjector;
 
 @Configurable("server")
-public class PartitionedLocalStore {
+public class PartitionedLocalStore implements Iterable<KratiLocalStore> {
 	private Log log = LogFactory.getLog(getClass());
 
 	@ConfigurableField(value="dirs", type=String.class)
@@ -50,6 +52,12 @@ public class PartitionedLocalStore {
 	public KratiLocalStore getPartition(Integer partitionId) {
 		KratiLocalPartition kp = partitions.get(partitionId);
 		return (kp == null) ? null : kp.store;
+	}
+
+	@Override
+	public Iterator<KratiLocalStore> iterator() {
+		Set<Map.Entry<Integer, KratiLocalPartition>> set = partitions.entrySet();
+		return new PartitionIterator(set);
 	}
 
 	protected void initStorageBackend() throws Exception {
@@ -110,4 +118,32 @@ public class PartitionedLocalStore {
 			this.partition = partition;
 		}
 	}
+
+	private static class PartitionIterator implements Iterator<KratiLocalStore> {
+		private List<KratiLocalStore> stores;
+
+		private Iterator<KratiLocalStore> iter;
+
+		public PartitionIterator(Set<Map.Entry<Integer, KratiLocalPartition>> backing) {
+			this.stores = new ArrayList<KratiLocalStore>(backing.size());
+			for (Map.Entry<Integer, KratiLocalPartition> e : backing) {
+				this.stores.add(e.getValue().store);
+			}
+			this.iter = this.stores.iterator();
+		}
+	
+
+		@Override
+		public boolean hasNext() {
+			return this.iter.hasNext();
+		}
+
+		@Override
+		public KratiLocalStore next() {
+			return this.iter.next();
+		}
+
+		@Override
+		public void remove() {
+		}}
 }

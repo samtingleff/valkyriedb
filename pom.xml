@@ -94,7 +94,7 @@
                                          </exec>
                                          <delete>
                                              <fileset dir="src/main/java/com/valkyrie/db/gen" includes="**/*"/>
-                                             <fileset dir="src/main/py" includes="**/*"/>
+                                             <fileset dir="src/main/py/valkyriedb" includes="**/*"/>
                                          </delete>
                                          <copy todir="src/main/java/com/valkyrie/db/gen">
                                              <fileset dir="target/generated-sources/gen-javabean/com/valkyrie/db/gen"/>
@@ -130,6 +130,11 @@
             <groupId>com.rubicon.oss</groupId>
             <artifactId>valkyrie</artifactId>
             <version>1.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.clojure</groupId>
+            <artifactId>clojure</artifactId>
+            <version>1.3.0</version>
         </dependency>
         <dependency>
             <groupId>com.sna-projects.krati</groupId>
@@ -176,6 +181,10 @@
     </pluginRepositories>
 
     <repositories>
+        <repository>
+            <id>clojure</id>
+            <url>http://build.clojure.org/releases/url</url>
+        </repository>
         <repository>
             <id>samtingleff-maven-snapshot-repo</id>
             <url>https://raw.github.com/samtingleff/maven-repo/master/snapshots</url>

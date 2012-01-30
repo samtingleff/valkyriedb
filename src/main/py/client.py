@@ -33,6 +33,15 @@ class ValkyrieDbClient(object):
     def set(self, key, value):
         return self.client.setValue(SetRequest(key=Key(bytes=key), data=value))
 
+    def delete(self, key):
+        return self.client.deleteValue(DeleteRequest(key=Key(bytes=key)))
+
+    def compile(self, name=None, code=None):
+        return self.client.compile(IFunction(name=name, code=code))
+
+    def iterate(self, name=None, code=None):
+        return self.client.iterate(IFunction(name=name, code=code))
+
 def main():
     client = ValkyrieDbClient(host='localhost', port=9012)
     client.connect()
@@ -41,6 +50,10 @@ def main():
     print client.get("bar")
     print client.set("bar", "987")
     print client.get("bar")
+    print client.delete("bar")
+    print client.get("bar")
+    id = client.compile(code="(fn [k, v] (println (str (String. k))))")
+    print client.iterate(name=id)
     client.disconnect()
 
 main()

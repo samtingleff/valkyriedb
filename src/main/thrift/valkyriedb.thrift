@@ -25,6 +25,11 @@ struct GetResponse {
  2: required binary data
 }
 
+struct IFunction {
+ 1: optional string name,
+ 2: optional string code
+}
+
 service ValkyrieDbService {
  bool exists(1: GetRequest request);
 
@@ -33,4 +38,8 @@ service ValkyrieDbService {
  void setValue(1: SetRequest request);
 
  void deleteValue(1: DeleteRequest request);
+
+ string compile(1: IFunction fn);
+
+ void iterate(1: IFunction fn);
 }
