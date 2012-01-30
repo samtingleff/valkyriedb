@@ -135,7 +135,7 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 		Iterator<KratiLocalStore> partitionIterator = localStorage.iterator();
 		while (partitionIterator.hasNext()) {
 			KratiLocalStore ks = partitionIterator.next();
-			ExecutionContext ctx = new MemoryExecutionContext(ks, funcs, null);
+			ExecutionContext ctx = new MemoryExecutionContext(this, funcs, null);
 			Iterator<Map.Entry<byte[], byte[]>> iter = ks.iterator();
 			while (iter.hasNext()) {
 				Map.Entry<byte[], byte[]> e = iter.next();
@@ -163,7 +163,7 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 			while (partitionIterator.hasNext()) {
 				KratiLocalStore ks = partitionIterator.next();
 				Iterator<Map.Entry<byte[], byte[]>> iter = ks.iterator();
-				ExecutionContext ctx = new MemoryExecutionContext(ks, funcs,
+				ExecutionContext ctx = new MemoryExecutionContext(this, funcs,
 						mapCollector);
 				while (iter.hasNext()) {
 					Map.Entry<byte[], byte[]> e = iter.next();
@@ -178,7 +178,7 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 			Map<Object, MemoryCollector<Object>> combineCollector = new HashMap<Object, MemoryCollector<Object>>();
 			for (Map.Entry<Object, MemoryCollector<Object>> e : mapCollector
 					.entrySet()) {
-				ExecutionContext ctx = new MemoryExecutionContext(null, funcs,
+				ExecutionContext ctx = new MemoryExecutionContext(this, funcs,
 						combineCollector);
 				IteratorSeq values = IteratorSeq
 						.create(e.getValue().iterator());
@@ -193,7 +193,7 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 					values.add(obj);
 			}
 
-			ExecutionContext ctx = new MemoryExecutionContext(null, funcs,
+			ExecutionContext ctx = new MemoryExecutionContext(this, funcs,
 					reduceCollector);
 			IteratorSeq seq = IteratorSeq.create(values.iterator());
 			reduce.invoke(ctx, seq);

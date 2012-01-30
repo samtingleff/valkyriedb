@@ -66,7 +66,7 @@ def main():
 
     mapper = client.compile(code="(fn [context k v] (.collect context 1 (Integer/parseInt (String. v))))")
     print mapper
-    combiner = client.compile(code="(fn [context k values] (.collect context k (reduce + values)))")
+    combiner = client.compile(code='(fn [context k values] (do (.set context (.getBytes "foo") (.getBytes "9")) (.collect context k (reduce + values))))')
     print combiner
     reducer = client.compile(code="(fn [context values] (.collect context 1 (reduce + values)))")
     print reducer
