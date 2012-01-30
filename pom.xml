@@ -5,7 +5,7 @@
     <groupId>com.rubicon.oss</groupId>
     <artifactId>valkyriedb</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>valkyriedb</name>
     <url>http://maven.apache.org</url>
 
@@ -86,15 +86,21 @@
                                          <exec executable="/usr/local/bin/thrift">
                                              <arg value="--gen"/>
                                              <arg value="java:beans,hashcode"/>
+                                             <arg value="--gen"/>
+                                             <arg value="py:new_style"/>
                                              <arg value="-o"/>
                                              <arg value="target/generated-sources"/>
                                              <arg value="src/main/thrift/valkyriedb.thrift"/>
                                          </exec>
                                          <delete>
                                              <fileset dir="src/main/java/com/valkyrie/db/gen" includes="**/*"/>
+                                             <fileset dir="src/main/py" includes="**/*"/>
                                          </delete>
                                          <copy todir="src/main/java/com/valkyrie/db/gen">
                                              <fileset dir="target/generated-sources/gen-javabean/com/valkyrie/db/gen"/>
+                                         </copy>
+                                         <copy todir="src/main/py">
+                                             <fileset dir="target/generated-sources/gen-py"/>
                                          </copy>
                                      </tasks>
                                  </configuration>
