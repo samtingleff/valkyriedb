@@ -157,8 +157,7 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 
 			Map<String, Long> counters = new HashMap<String, Long>();
 
-			Iterator<KratiLocalStore> partitionIterator = localStorage
-					.iterator();
+			Iterator<KratiLocalStore> partitionIterator = localStorage.iterator();
 			Map<Object, MemoryCollector<Object>> mapCollector = new HashMap<Object, MemoryCollector<Object>>();
 			while (partitionIterator.hasNext()) {
 				KratiLocalStore ks = partitionIterator.next();
@@ -178,10 +177,8 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 			Map<Object, MemoryCollector<Object>> combineCollector = new HashMap<Object, MemoryCollector<Object>>();
 			for (Map.Entry<Object, MemoryCollector<Object>> e : mapCollector
 					.entrySet()) {
-				ExecutionContext ctx = new MemoryExecutionContext(this, funcs,
-						combineCollector);
-				IteratorSeq values = IteratorSeq
-						.create(e.getValue().iterator());
+				ExecutionContext ctx = new MemoryExecutionContext(this, funcs, combineCollector);
+				IteratorSeq values = IteratorSeq.create(e.getValue().iterator());
 				combine.invoke(ctx, e.getKey(), values);
 			}
 
@@ -193,8 +190,7 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 					values.add(obj);
 			}
 
-			ExecutionContext ctx = new MemoryExecutionContext(this, funcs,
-					reduceCollector);
+			ExecutionContext ctx = new MemoryExecutionContext(this, funcs, reduceCollector);
 			IteratorSeq seq = IteratorSeq.create(values.iterator());
 			reduce.invoke(ctx, seq);
 			MapReduceResponse response = new MapReduceResponse();
