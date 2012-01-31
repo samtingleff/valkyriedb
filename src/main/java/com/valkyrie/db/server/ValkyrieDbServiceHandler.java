@@ -52,6 +52,8 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 		loadScript("serializers.double", "/valkyrie/ser/ser-doubles.clj");
 		loadScript("serializers.integer", "/valkyrie/ser/ser-integers.clj");
 		loadScript("serializers.long", "/valkyrie/ser/ser-longs.clj");
+		loadScript("serializers.tcompact", "/valkyrie/ser/ser-tcompact.clj");
+		loadScript("serializers.tcompact.gzip", "/valkyrie/ser/ser-tcompact-gzip.clj");
 	}
 
 	private void loadScript(String name, String resource) {
