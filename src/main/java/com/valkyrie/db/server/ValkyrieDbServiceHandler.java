@@ -154,6 +154,8 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 			IFn combine = getIFn(request.getCombiner());
 			IFn reduce = getIFn(request.getReducer());
 			IFn serializer = getIFn(request.getSerializer());
+			if (serializer == null)
+				serializer = defaultSerializer();
 
 			Map<String, Long> counters = new HashMap<String, Long>();
 
@@ -215,9 +217,20 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 	}
 
 	private IFn getIFn(IFunction code) {
+		if ((code == null) || ((code.getName() == null) && (code.getCode() == null)))
+			return null;
 		IFn fn = (code.getCode() == null)
-				? funcs.get(code.getName())
+				? ((funcs.get(code.getName()) != null)
+						? funcs.get(code.getName())
+						: null)
 				: scripting.compile(code.getCode());
+		return fn;
+	}
+
+	private IFn defaultSerializer() {
+		IFn fn = (funcs.get("default.serializer") != null)
+				? funcs.get("default.serializer")
+				: scripting.compile("(fn [v] (.getBytes (.toString (str v))))");
 		return fn;
 	}
 }
