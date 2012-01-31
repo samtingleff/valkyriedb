@@ -1,5 +1,6 @@
 package com.valkyrie.db.server;
 
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,8 +48,23 @@ public class ValkyrieDbServiceHandler implements ValkyrieDbService.Iface {
 	}
 
 	public void init() {
+		// read clojure defs
+		loadScript("serializers.double", "/valkyrie/ser/ser-doubles.clj");
+		loadScript("serializers.integer", "/valkyrie/ser/ser-integers.clj");
+		loadScript("serializers.long", "/valkyrie/ser/ser-longs.clj");
 	}
 
+	private void loadScript(String name, String resource) {
+		try {
+			InputStream is = getClass().getResourceAsStream(resource);
+			IFn fn = scripting.compile(is);
+			is.close();
+			funcs.put(name, fn);
+		} catch(Exception e) {
+			log.error("Exception", e);
+			throw new RuntimeException(e);
+		}
+	}
 	@Override
 	public boolean exists(GetRequest request) throws TException {
 		log.trace("exists()");
