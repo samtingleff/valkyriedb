@@ -2,10 +2,12 @@ package com.valkyrie.db.server;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -14,10 +16,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mtbaker.client.Configuration;
 import com.mtbaker.client.ConfigurationClient;
 import com.mtbaker.client.annotations.Configurable;
 import com.mtbaker.client.annotations.ConfigurableField;
 import com.mtbaker.client.annotations.ConfigurationInjector;
+import com.valkyrie.db.util.KeyPartitioner;
+import com.valkyrie.db.util.KeyPartitionerFactory;
 
 @Configurable("server")
 public class PartitionedLocalStore implements Iterable<KratiLocalStore> {
@@ -71,6 +76,44 @@ public class PartitionedLocalStore implements Iterable<KratiLocalStore> {
 				partitions.put(p.partition, p);
 			}
 		}
+		if (partitions.size() == 0) {
+			List<KratiLocalPartition> localPartitions = bootstrapMe(stringDirs);
+			for (KratiLocalPartition p : localPartitions) {
+				partitions.put(p.partition, p);
+			}
+		}
+	}
+
+	protected List<KratiLocalPartition> bootstrapMe(List<String> dirs) throws Exception {
+		Configuration c = conf.getConfiguration("server", 60);
+		KeyPartitioner partitioner = KeyPartitionerFactory.createKeyPartitioner(c);
+		List<KratiLocalPartition> partitions = new LinkedList<KratiLocalPartition>();
+
+		// send null for localhost
+		List<Integer> partitionIds = partitioner.getPartitionList(null);
+
+		int partitionIndex = 0;
+		for (String dirString : dirs) {
+			if (partitionIndex >= partitionIds.size())
+				break;
+			// pop off a partition and initialize it in this dir
+			int partition = partitionIds.get(partitionIndex);
+			File dir = new File(dirString);
+			File child = new File(dir, "0");
+			child.mkdirs();
+			File current = new File(child, "index.current");
+			current.mkdirs();
+			File propFile = new File(current, "partition.properties");
+			Properties p = new Properties();
+			p.setProperty("partition.id", Integer.toString(partition));
+			FileOutputStream fos = new FileOutputStream(propFile);
+			p.store(fos, null);
+			fos.close();
+			List<KratiLocalPartition> kratiPartitions = initDir(dir);
+			partitions.addAll(kratiPartitions);
+			++partitionIndex;
+		}
+		return partitions;
 	}
 
 	protected List<KratiLocalPartition> initDir(File dir) throws Exception {

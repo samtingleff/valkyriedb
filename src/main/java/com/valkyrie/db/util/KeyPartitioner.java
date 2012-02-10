@@ -23,7 +23,7 @@ public class KeyPartitioner {
 		this.hash = hash;
 		this.conf = conf;
 		if (conf != null) {
-			this.numPartitions = conf.getInteger("valkyrie.partitions.count", 1);
+			this.numPartitions = conf.getInteger("partitions.count", 1);
 			this.servers = conf.getStringList("servers",
 					Collections.singletonList("localhost:" + Constants.DEFAULT_PORT));
 		}
@@ -40,8 +40,8 @@ public class KeyPartitioner {
 	}
 
 	public List<Integer> getPartitionList(String host) throws Exception {
-		List<String> servers = conf.getStringList("valkyrie.servers", Collections.EMPTY_LIST);
-		int numpartitions = conf.getInteger("valkyrie.partitions.count", 1);
+		List<String> servers = conf.getStringList("servers", Collections.EMPTY_LIST);
+		int numpartitions = conf.getInteger("partitions.count", 1);
 		if (host == null)
 			host = InetAddress.getLocalHost().getHostName();
 		int myhostid = 0, index = 0;
