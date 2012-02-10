@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -22,6 +21,8 @@ import org.apache.hadoop.util.ToolRunner;
 import com.mtbaker.client.Configuration;
 import com.mtbaker.client.provider.properties.PropertiesConfigurationClient;
 import com.valkyrie.db.util.FileUtils;
+import com.valkyrie.db.util.KeyPartitioner;
+import com.valkyrie.db.util.KeyPartitionerFactory;
 
 public class BootstrapDbServer extends Configured implements Tool {
 
@@ -96,33 +97,8 @@ public class BootstrapDbServer extends Configured implements Tool {
 	}
 
 	protected List<Integer> getMyPartitionList() throws Exception {
-		List<String> servers = conf.getStringList("valkyrie.servers", Collections.EMPTY_LIST);
-		int numpartitions = conf.getInteger("valkyrie.partitions.count", 1);
-		String hostname = getHostname();
-		int myhostid = 0, index = 0;
-		for (String s : servers) {
-			String[] split = s.split(":");
-			if (split[0].equals(hostname)) {
-				myhostid = index;
-				break;
-			}
-			++index;
-		}
-		List<Integer> result = new LinkedList<Integer>();
-		for (int i = 0; i < numpartitions; ++i) {
-			int hostid = i % servers.size();
-			if (hostid == myhostid)
-				result.add(new Integer(i));
-		}
-		return result;
-	}
-
-	protected String getHostname() {
-		try {
-			return InetAddress.getLocalHost().getHostName();
-		} catch(Exception e) {
-			throw new RuntimeException(e);
-		}
+		KeyPartitioner partitioner = KeyPartitionerFactory.createKeyPartitioner(this.conf);
+		return partitioner.getPartitionList(InetAddress.getLocalHost().getHostName());
 	}
 
 	protected void initConfiguration() throws IOException {
