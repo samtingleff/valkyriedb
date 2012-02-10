@@ -64,20 +64,34 @@ public class PartitionedLocalStore implements Iterable<KratiLocalStore> {
 		log.trace("initStorageBackend()");
 		partitions = new HashMap<Integer, KratiLocalPartition>(stringDirs
 				.size());
+		int index = 0;
 		for (String dir : stringDirs) {
 			File f = new File(dir);
-			List<KratiLocalPartition> localPartitions = initDir(f);
+			List<KratiLocalPartition> localPartitions = initDir(f, index);
 			for (KratiLocalPartition p : localPartitions) {
 				partitions.put(p.partition, p);
 			}
+			++index;
 		}
 	}
 
-	protected List<KratiLocalPartition> initDir(File dir) throws Exception {
+	protected int getPartitionId(int dirIndex) {
+		return 0;
+	}
+
+	protected void createSkeleton(File dir, int dirIndexId) {
+		int partitionId = getPartitionId(dirIndexId);
+		
+	}
+
+	protected List<KratiLocalPartition> initDir(File dir, int dirIndexId) throws Exception {
 		log.trace("initDir()");
 		File[] children = dir.listFiles();
 		List<KratiLocalPartition> result = new ArrayList<KratiLocalPartition>(
 				children.length);
+		if (children.length == 0) {
+			createSkeleton(dir, dirIndexId);
+		}
 		for (File child : children) {
 			if (!child.isDirectory())
 				continue;

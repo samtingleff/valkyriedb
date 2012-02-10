@@ -104,7 +104,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 		TConnection tc = null;
 		try {
 			tc = getConnection(key);
-			int partition = keyPartitioner.getPartition(serverConf, key.getBytes());
+			int partition = keyPartitioner.getPartition(key.getBytes());
 			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
 			k.setPartition(partition);
 			GetRequest gr = new GetRequest(k);
@@ -222,7 +222,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	protected GetResult getValue(String key) throws Exception {
 		TConnection tc = getConnection(key);
 		try {
-			int partition = keyPartitioner.getPartition(serverConf, key.getBytes());
+			int partition = keyPartitioner.getPartition(key.getBytes());
 			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
 			k.setPartition(partition);
 			GetRequest request = new GetRequest(k);
@@ -241,7 +241,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	}
 
 	protected void initKeyPartitioner() throws IOException {
-		this.keyPartitioner = KeyPartitionerFactory.createKeyPartitioner();
+		this.keyPartitioner = KeyPartitionerFactory.createKeyPartitioner(serverConf);
 	}
 
 	protected void initConnectionPool() {
@@ -250,7 +250,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 
 	protected TConnection getConnection(String key) throws Exception {
 		log.trace("getConnection()");
-		int partition = keyPartitioner.getPartition(serverConf, key.getBytes());
+		int partition = keyPartitioner.getPartition(key.getBytes());
 		if (log.isDebugEnabled())
 			log.debug("Got partition " + partition + " for key " + key);
 		String server = getBackend(partition);
@@ -327,7 +327,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 			boolean result = false;
 			try {
 				byte[] k = "foo".getBytes();
-				int partition = keyPartitioner.getPartition(serverConf, k);
+				int partition = keyPartitioner.getPartition(k);
 				Key keyK = new Key(ByteBuffer.wrap(k));
 				keyK.setPartition(partition);
 				GetRequest request = new GetRequest(keyK);
