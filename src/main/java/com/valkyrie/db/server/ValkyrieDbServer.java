@@ -3,6 +3,10 @@ package com.valkyrie.db.server;
 import java.io.File;
 import java.io.IOException;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
+
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;
@@ -24,7 +28,7 @@ public class ValkyrieDbServer {
 
 	public static void main(String[] args) throws Exception {
 		ValkyrieDbServer db = new ValkyrieDbServer();
-		db.init();
+		db.init(args);
 		db.start();
 	}
 
@@ -40,8 +44,13 @@ public class ValkyrieDbServer {
 		
 	}
 
-	public void init() throws Exception {
-		initConfiguration();
+	public void init(String[] args) throws Exception {
+		OptionParser parser = new OptionParser();
+		OptionSpec<String> config = parser.accepts("c")
+				.withRequiredArg().defaultsTo("/etc/valkyriedb.xml");
+		OptionSet options = parser.parse(args);
+		String path = config.value(options);
+		initConfiguration(path);
 		initLocalStorage();
 		initServiceHandler();
 		initNetworkService();
@@ -55,8 +64,8 @@ public class ValkyrieDbServer {
 		this.serviceThread.stop();
 	}
 
-	private void initConfiguration() throws IOException {
-		File f = new File("/etc/valkyriedb.xml");
+	private void initConfiguration(String path) throws IOException {
+		File f = new File(path);
 		conf = new XmlConfigurationClient(new FileInputStreamSource(f));
 	}
 
