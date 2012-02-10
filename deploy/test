@@ -1,0 +1,5 @@
+#!/bin/sh
+mvn package
+scp target/valkyriedb-1.0.5-jar-with-dependencies.jar sam@thunder:/usr/local/builds/valkryiedb/
+ssh sam@thunder "rm /usr/local/builds/valkryiedb/valkyriedb-current.jar ; ln -s /usr/local/builds/valkryiedb/valkyriedb-1.0.5-jar-with-dependencies.jar /usr/local/builds/valkryiedb/valkyriedb-current.jar"
+ssh sam@thunder "sudo monit stop valkyriedb-test ; sleep 1 ; sudo kill -9 \`cat /var/run/valkyriedb/valkyriedb.test.pid\` ; sleep 1 ; sudo monit start valkyriedb-test"
