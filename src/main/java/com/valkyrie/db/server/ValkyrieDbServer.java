@@ -1,7 +1,9 @@
 package com.valkyrie.db.server;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -48,7 +50,10 @@ public class ValkyrieDbServer {
 		OptionParser parser = new OptionParser();
 		OptionSpec<String> config = parser.accepts("c")
 				.withRequiredArg().defaultsTo("/etc/valkyriedb.xml");
+		OptionSpec<String> pid = parser.accepts("p")
+				.withRequiredArg().defaultsTo("/var/run/valkyriedb.pid");
 		OptionSet options = parser.parse(args);
+		writePid(pid.value(options));
 		String path = config.value(options);
 		initConfiguration(path);
 		initLocalStorage();
@@ -62,6 +67,37 @@ public class ValkyrieDbServer {
 
 	public void stop() {
 		this.serviceThread.stop();
+	}
+
+	private void writePid(String pidPath) throws IOException {
+		String pid = getPid("valkyriedb");
+		FileOutputStream fos = new FileOutputStream(new File(pidPath));
+		try {
+			fos.write(pid.getBytes());
+		} finally {
+			fos.close();
+		}
+	}
+
+	private String getPid(String fallback) {
+	    // Note: may fail in some JVM implementations
+	    // therefore fallback has to be provided
+
+	    // something like '<pid>@<hostname>', at least in SUN / Oracle JVMs
+	    final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+	    final int index = jvmName.indexOf('@');
+
+	    if (index < 1) {
+	        // part before '@' empty (index = 0) / '@' not found (index = -1)
+	        return fallback;
+	    }
+
+	    try {
+	        return Long.toString(Long.parseLong(jvmName.substring(0, index)));
+	    } catch (NumberFormatException e) {
+	        // ignore
+	    	return fallback;
+	    }
 	}
 
 	private void initConfiguration(String path) throws IOException {
