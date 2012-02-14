@@ -129,7 +129,7 @@
         <dependency>
             <groupId>com.rubicon.oss</groupId>
             <artifactId>valkyrie</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.clojure</groupId>
