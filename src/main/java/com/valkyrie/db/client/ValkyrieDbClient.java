@@ -69,7 +69,15 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 
 	protected KeyPartitioner keyPartitioner;
 
+	public ValkyrieDbClient(Configuration serverConf) {
+		this.serverConf = serverConf;
+	}
+
 	public ValkyrieDbClient() {
+	}
+
+	public void setConfiguration(Configuration serverConf) {
+		this.serverConf = serverConf;
 	}
 
 	@Override
@@ -235,9 +243,11 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	}
 
 	protected void initConfiguration() throws IOException {
-		File f = new File("/etc/valkyriedb.xml");
-		conf = new XmlConfigurationClient(new FileInputStreamSource(f));
-		serverConf = conf.getConfiguration("server", 1000*60*10);
+		if (serverConf == null) {
+			File f = new File("/etc/valkyriedb.xml");
+			conf = new XmlConfigurationClient(new FileInputStreamSource(f));
+			serverConf = conf.getConfiguration("server", 1000*60*10);
+		}
 	}
 
 	protected void initKeyPartitioner() throws IOException {
