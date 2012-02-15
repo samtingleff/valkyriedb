@@ -27,10 +27,13 @@ import com.othersonline.kv.KeyValueStore;
 import com.othersonline.kv.KeyValueStoreException;
 import com.othersonline.kv.gen.Constants;
 import com.othersonline.kv.gen.GetResult;
+import com.othersonline.kv.transcoder.SerializingTranscoder;
 import com.othersonline.kv.transcoder.Transcoder;
+import com.valkyrie.db.gen.DeleteRequest;
 import com.valkyrie.db.gen.GetRequest;
 import com.valkyrie.db.gen.GetResponse;
 import com.valkyrie.db.gen.Key;
+import com.valkyrie.db.gen.SetRequest;
 import com.valkyrie.db.gen.ValkyrieDbService;
 import com.valkyrie.db.util.KeyPartitioner;
 import com.valkyrie.db.util.KeyPartitionerFactory;
@@ -60,6 +63,8 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	}
 
 	protected Log log = LogFactory.getLog(getClass());
+
+	protected Transcoder defaultTranscoder = new SerializingTranscoder();
 
 	protected ConfigurationClient conf;
 
@@ -216,15 +221,32 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 	@Override
 	public void set(String key, Object value) throws KeyValueStoreException,
 			IOException {
+		log.trace("set()");
+		set(key, value, defaultTranscoder);
 	}
 
 	@Override
 	public void set(String key, Object value, Transcoder transcoder)
 			throws KeyValueStoreException, IOException {
+		log.trace("set()");
+		assertWriteable();
+		try {
+			byte[] bytes = transcoder.encode(value);
+			setValue(key, bytes);
+		} catch (Exception e) {
+			throw new KeyValueStoreException(e);
+		} finally { }
 	}
 
 	@Override
 	public void delete(String key) throws KeyValueStoreException, IOException {
+		log.trace("delete()");
+		assertWriteable();
+		try {
+			deleteValue(key);
+		} catch (Exception e) {
+			throw new KeyValueStoreException(e);
+		}
 	}
 
 	protected GetResult getValue(String key) throws Exception {
@@ -242,6 +264,31 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 		}
 	}
 
+	protected void setValue(String key, byte[] value) throws Exception {
+		TConnection tc = getConnection(key);
+		try {
+			int partition = keyPartitioner.getPartition(key.getBytes());
+			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
+			k.setPartition(partition);
+			SetRequest request = new SetRequest(k, ByteBuffer.wrap(value));
+			tc.kv.setValue(request);
+		} finally {
+			returnConnection(tc);
+		}
+	}
+
+	protected void deleteValue(String key) throws Exception {
+		TConnection tc = getConnection(key);
+		try {
+			int partition = keyPartitioner.getPartition(key.getBytes());
+			Key k = new Key(ByteBuffer.wrap(key.getBytes()));
+			k.setPartition(partition);
+			DeleteRequest request = new DeleteRequest(k);
+			tc.kv.deleteValue(request);
+		} finally {
+			returnConnection(tc);
+		}
+	}
 	protected void initConfiguration() throws IOException {
 		if (serverConf == null) {
 			File f = new File("/etc/valkyriedb.xml");
