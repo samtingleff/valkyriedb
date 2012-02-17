@@ -21,8 +21,8 @@ import com.mtbaker.client.ConfigurationClient;
 import com.mtbaker.client.annotations.Configurable;
 import com.mtbaker.client.annotations.ConfigurableField;
 import com.mtbaker.client.annotations.ConfigurationInjector;
-import com.valkyrie.db.util.KeyPartitioner;
 import com.valkyrie.db.util.KeyPartitionerFactory;
+import com.valkyrie.db.util.SimpleKeyPartitioner;
 
 @Configurable("server")
 public class PartitionedLocalStore implements Iterable<KratiLocalStore> {
@@ -86,7 +86,7 @@ public class PartitionedLocalStore implements Iterable<KratiLocalStore> {
 
 	protected List<KratiLocalPartition> bootstrapMe(List<String> dirs) throws Exception {
 		Configuration c = conf.getConfiguration("server", 60);
-		KeyPartitioner partitioner = KeyPartitionerFactory.createKeyPartitioner(c);
+		SimpleKeyPartitioner partitioner = KeyPartitionerFactory.createKeyPartitioner(c);
 		List<KratiLocalPartition> partitions = new LinkedList<KratiLocalPartition>();
 
 		// send null for localhost

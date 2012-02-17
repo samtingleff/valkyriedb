@@ -6,7 +6,7 @@ import com.mtbaker.client.Configuration;
 
 public class KeyPartitionerFactory {
 
-	public static KeyPartitioner createKeyPartitioner(Configuration conf) throws IOException {
-		return new KeyPartitioner(conf, new Murmur3HashFunction());
+	public static SimpleKeyPartitioner createKeyPartitioner(Configuration conf) throws IOException {
+		return new HashBytePartitioner(conf, new Murmur3HashFunction());
 	}
 }

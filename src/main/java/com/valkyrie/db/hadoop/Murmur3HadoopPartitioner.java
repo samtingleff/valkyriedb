@@ -4,15 +4,15 @@ import java.io.IOException;
 
 import org.apache.hadoop.mapreduce.Partitioner;
 
-import com.valkyrie.db.util.KeyPartitioner;
-import com.valkyrie.db.util.Murmur3HashFunction;
+import com.valkyrie.db.util.KeyPartitionerFactory;
+import com.valkyrie.db.util.SimpleKeyPartitioner;
 
 public class Murmur3HadoopPartitioner<K, V> extends Partitioner<K, V> {
-	private KeyPartitioner partitioner;
+	private SimpleKeyPartitioner partitioner;
 
 	public Murmur3HadoopPartitioner() {
 		try {
-			this.partitioner = new KeyPartitioner(null, new Murmur3HashFunction());
+			this.partitioner = KeyPartitionerFactory.createKeyPartitioner(null);
 		} catch(IOException e) {
 			throw new RuntimeException(e);
 		}
