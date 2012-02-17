@@ -22,7 +22,7 @@ import com.mtbaker.client.Configuration;
 import com.mtbaker.client.provider.properties.PropertiesConfigurationClient;
 import com.valkyrie.db.util.FileUtils;
 import com.valkyrie.db.util.KeyPartitionerFactory;
-import com.valkyrie.db.util.SimpleKeyPartitioner;
+import com.valkyrie.db.util.KeyPartitioner;
 
 public class BootstrapDbServer extends Configured implements Tool {
 
@@ -97,7 +97,7 @@ public class BootstrapDbServer extends Configured implements Tool {
 	}
 
 	protected List<Integer> getMyPartitionList() throws Exception {
-		SimpleKeyPartitioner partitioner = KeyPartitionerFactory.createKeyPartitioner(this.conf);
+		KeyPartitioner partitioner = KeyPartitionerFactory.createKeyPartitioner(this.conf);
 		return partitioner.getPartitionList(InetAddress.getLocalHost().getHostName());
 	}
 

@@ -36,7 +36,7 @@ import com.valkyrie.db.gen.Key;
 import com.valkyrie.db.gen.SetRequest;
 import com.valkyrie.db.gen.ValkyrieDbService;
 import com.valkyrie.db.util.KeyPartitionerFactory;
-import com.valkyrie.db.util.SimpleKeyPartitioner;
+import com.valkyrie.db.util.KeyPartitioner;
 
 public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore {
 
@@ -72,7 +72,7 @@ public class ValkyrieDbClient extends BaseKeyValueStore implements KeyValueStore
 
 	protected GenericKeyedObjectPool pool;
 
-	protected SimpleKeyPartitioner keyPartitioner;
+	protected KeyPartitioner keyPartitioner;
 
 	public ValkyrieDbClient(Configuration serverConf) {
 		this.serverConf = serverConf;

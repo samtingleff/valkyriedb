@@ -9,7 +9,7 @@ import java.util.List;
 import com.mtbaker.client.Configuration;
 import com.othersonline.kv.gen.Constants;
 
-public class HashBytePartitioner implements SimpleKeyPartitioner<byte[]> {
+public class HashBytePartitioner implements KeyPartitioner<byte[]> {
 	private Configuration conf;
 
 	private HashFunction<byte[]> hash;
