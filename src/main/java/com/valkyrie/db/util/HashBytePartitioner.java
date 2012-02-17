@@ -48,12 +48,10 @@ public class HashBytePartitioner implements SimpleKeyPartitioner<byte[]> {
 	 * @see com.valkyrie.db.util.SimpleKeyPartitioner#getPartitionList(java.lang.String)
 	 */
 	public List<Integer> getPartitionList(String host) throws Exception {
-		List<String> servers = conf.getStringList("servers", Collections.EMPTY_LIST);
-		int numpartitions = conf.getInteger("partitions.count", 1);
 		if (host == null)
 			host = InetAddress.getLocalHost().getHostName();
 		int myhostid = 0, index = 0;
-		for (String s : servers) {
+		for (String s : this.servers) {
 			String[] split = s.split(":");
 			if (split[0].equals(host)) {
 				myhostid = index;
@@ -62,7 +60,7 @@ public class HashBytePartitioner implements SimpleKeyPartitioner<byte[]> {
 			++index;
 		}
 		List<Integer> result = new LinkedList<Integer>();
-		for (int i = 0; i < numpartitions; ++i) {
+		for (int i = 0; i < this.numPartitions; ++i) {
 			int hostid = i % servers.size();
 			if (hostid == myhostid)
 				result.add(new Integer(i));
