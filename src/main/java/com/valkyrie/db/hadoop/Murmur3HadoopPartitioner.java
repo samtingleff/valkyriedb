@@ -8,11 +8,11 @@ import com.valkyrie.db.util.KeyPartitionerFactory;
 import com.valkyrie.db.util.KeyPartitioner;
 
 public class Murmur3HadoopPartitioner<K, V> extends Partitioner<K, V> {
-	private KeyPartitioner partitioner;
+	private KeyPartitioner<byte[]> partitioner;
 
 	public Murmur3HadoopPartitioner() {
 		try {
-			this.partitioner = KeyPartitionerFactory.createKeyPartitioner(null);
+			this.partitioner = KeyPartitionerFactory.defaultKeyPartitioner(null);
 		} catch(IOException e) {
 			throw new RuntimeException(e);
 		}
