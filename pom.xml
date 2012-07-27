@@ -90,7 +90,7 @@
                                              <arg value="py:new_style"/>
                                              <arg value="-o"/>
                                              <arg value="target/generated-sources"/>
-                                             <arg value="src/main/thrift/valkyriedb.thrift"/>
+                                             <arg value="src/main/thrift/queries.thrift"/>
                                          </exec>
                                          <delete>
                                              <fileset dir="src/main/java/com/valkyrie/db/gen" includes="**/*"/>
@@ -159,7 +159,7 @@
         <dependency>
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
-            <version>0.6.1</version>
+            <version>0.8.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
