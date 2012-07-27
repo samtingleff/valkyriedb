@@ -31,8 +31,9 @@ import org.slf4j.LoggerFactory;
 public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateColumnSpec, AggregateColumnSpec._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("AggregateColumnSpec");
 
-  private static final org.apache.thrift.protocol.TField AGGREGATE_FIELD_DESC = new org.apache.thrift.protocol.TField("aggregate", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.STRUCT, (short)2);
+  private static final org.apache.thrift.protocol.TField COLUMN_FIELD_DESC = new org.apache.thrift.protocol.TField("column", org.apache.thrift.protocol.TType.STRING, (short)1);
+  private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)2);
+  private static final org.apache.thrift.protocol.TField AGGREGATE_FIELD_DESC = new org.apache.thrift.protocol.TField("aggregate", org.apache.thrift.protocol.TType.I32, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -40,17 +41,23 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
     schemes.put(TupleScheme.class, new AggregateColumnSpecTupleSchemeFactory());
   }
 
+  private String column; // required
+  private ColumnType type; // required
   private Aggregate aggregate; // required
-  private Value value; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+    COLUMN((short)1, "column"),
+    /**
+     * 
+     * @see ColumnType
+     */
+    TYPE((short)2, "type"),
     /**
      * 
      * @see Aggregate
      */
-    AGGREGATE((short)1, "aggregate"),
-    VALUE((short)2, "value");
+    AGGREGATE((short)3, "aggregate");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -65,10 +72,12 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // AGGREGATE
+        case 1: // COLUMN
+          return COLUMN;
+        case 2: // TYPE
+          return TYPE;
+        case 3: // AGGREGATE
           return AGGREGATE;
-        case 2: // VALUE
-          return VALUE;
         default:
           return null;
       }
@@ -112,10 +121,12 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.COLUMN, new org.apache.thrift.meta_data.FieldMetaData("column", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, ColumnType.class)));
     tmpMap.put(_Fields.AGGREGATE, new org.apache.thrift.meta_data.FieldMetaData("aggregate", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, Aggregate.class)));
-    tmpMap.put(_Fields.VALUE, new org.apache.thrift.meta_data.FieldMetaData("value", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Value.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(AggregateColumnSpec.class, metaDataMap);
   }
@@ -124,23 +135,28 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
   }
 
   public AggregateColumnSpec(
-    Aggregate aggregate,
-    Value value)
+    String column,
+    ColumnType type,
+    Aggregate aggregate)
   {
     this();
+    this.column = column;
+    this.type = type;
     this.aggregate = aggregate;
-    this.value = value;
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
   public AggregateColumnSpec(AggregateColumnSpec other) {
+    if (other.isSetColumn()) {
+      this.column = other.column;
+    }
+    if (other.isSetType()) {
+      this.type = other.type;
+    }
     if (other.isSetAggregate()) {
       this.aggregate = other.aggregate;
-    }
-    if (other.isSetValue()) {
-      this.value = new Value(other.value);
     }
   }
 
@@ -150,8 +166,63 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
 
   @Override
   public void clear() {
+    this.column = null;
+    this.type = null;
     this.aggregate = null;
-    this.value = null;
+  }
+
+  public String getColumn() {
+    return this.column;
+  }
+
+  public void setColumn(String column) {
+    this.column = column;
+  }
+
+  public void unsetColumn() {
+    this.column = null;
+  }
+
+  /** Returns true if field column is set (has been assigned a value) and false otherwise */
+  public boolean isSetColumn() {
+    return this.column != null;
+  }
+
+  public void setColumnIsSet(boolean value) {
+    if (!value) {
+      this.column = null;
+    }
+  }
+
+  /**
+   * 
+   * @see ColumnType
+   */
+  public ColumnType getType() {
+    return this.type;
+  }
+
+  /**
+   * 
+   * @see ColumnType
+   */
+  public void setType(ColumnType type) {
+    this.type = type;
+  }
+
+  public void unsetType() {
+    this.type = null;
+  }
+
+  /** Returns true if field type is set (has been assigned a value) and false otherwise */
+  public boolean isSetType() {
+    return this.type != null;
+  }
+
+  public void setTypeIsSet(boolean value) {
+    if (!value) {
+      this.type = null;
+    }
   }
 
   /**
@@ -185,31 +256,24 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
     }
   }
 
-  public Value getValue() {
-    return this.value;
-  }
-
-  public void setValue(Value value) {
-    this.value = value;
-  }
-
-  public void unsetValue() {
-    this.value = null;
-  }
-
-  /** Returns true if field value is set (has been assigned a value) and false otherwise */
-  public boolean isSetValue() {
-    return this.value != null;
-  }
-
-  public void setValueIsSet(boolean value) {
-    if (!value) {
-      this.value = null;
-    }
-  }
-
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
+    case COLUMN:
+      if (value == null) {
+        unsetColumn();
+      } else {
+        setColumn((String)value);
+      }
+      break;
+
+    case TYPE:
+      if (value == null) {
+        unsetType();
+      } else {
+        setType((ColumnType)value);
+      }
+      break;
+
     case AGGREGATE:
       if (value == null) {
         unsetAggregate();
@@ -218,24 +282,19 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
       }
       break;
 
-    case VALUE:
-      if (value == null) {
-        unsetValue();
-      } else {
-        setValue((Value)value);
-      }
-      break;
-
     }
   }
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
+    case COLUMN:
+      return getColumn();
+
+    case TYPE:
+      return getType();
+
     case AGGREGATE:
       return getAggregate();
-
-    case VALUE:
-      return getValue();
 
     }
     throw new IllegalStateException();
@@ -248,10 +307,12 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
     }
 
     switch (field) {
+    case COLUMN:
+      return isSetColumn();
+    case TYPE:
+      return isSetType();
     case AGGREGATE:
       return isSetAggregate();
-    case VALUE:
-      return isSetValue();
     }
     throw new IllegalStateException();
   }
@@ -269,21 +330,30 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
     if (that == null)
       return false;
 
+    boolean this_present_column = true && this.isSetColumn();
+    boolean that_present_column = true && that.isSetColumn();
+    if (this_present_column || that_present_column) {
+      if (!(this_present_column && that_present_column))
+        return false;
+      if (!this.column.equals(that.column))
+        return false;
+    }
+
+    boolean this_present_type = true && this.isSetType();
+    boolean that_present_type = true && that.isSetType();
+    if (this_present_type || that_present_type) {
+      if (!(this_present_type && that_present_type))
+        return false;
+      if (!this.type.equals(that.type))
+        return false;
+    }
+
     boolean this_present_aggregate = true && this.isSetAggregate();
     boolean that_present_aggregate = true && that.isSetAggregate();
     if (this_present_aggregate || that_present_aggregate) {
       if (!(this_present_aggregate && that_present_aggregate))
         return false;
       if (!this.aggregate.equals(that.aggregate))
-        return false;
-    }
-
-    boolean this_present_value = true && this.isSetValue();
-    boolean that_present_value = true && that.isSetValue();
-    if (this_present_value || that_present_value) {
-      if (!(this_present_value && that_present_value))
-        return false;
-      if (!this.value.equals(that.value))
         return false;
     }
 
@@ -294,15 +364,20 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
 
+    boolean present_column = true && (isSetColumn());
+    builder.append(present_column);
+    if (present_column)
+      builder.append(column);
+
+    boolean present_type = true && (isSetType());
+    builder.append(present_type);
+    if (present_type)
+      builder.append(type.getValue());
+
     boolean present_aggregate = true && (isSetAggregate());
     builder.append(present_aggregate);
     if (present_aggregate)
       builder.append(aggregate.getValue());
-
-    boolean present_value = true && (isSetValue());
-    builder.append(present_value);
-    if (present_value)
-      builder.append(value);
 
     return builder.toHashCode();
   }
@@ -315,22 +390,32 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
     int lastComparison = 0;
     AggregateColumnSpec typedOther = (AggregateColumnSpec)other;
 
+    lastComparison = Boolean.valueOf(isSetColumn()).compareTo(typedOther.isSetColumn());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetColumn()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.column, typedOther.column);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetType()).compareTo(typedOther.isSetType());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetType()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, typedOther.type);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetAggregate()).compareTo(typedOther.isSetAggregate());
     if (lastComparison != 0) {
       return lastComparison;
     }
     if (isSetAggregate()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.aggregate, typedOther.aggregate);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetValue()).compareTo(typedOther.isSetValue());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetValue()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.value, typedOther.value);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -355,19 +440,27 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
     StringBuilder sb = new StringBuilder("AggregateColumnSpec(");
     boolean first = true;
 
+    sb.append("column:");
+    if (this.column == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.column);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("type:");
+    if (this.type == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.type);
+    }
+    first = false;
+    if (!first) sb.append(", ");
     sb.append("aggregate:");
     if (this.aggregate == null) {
       sb.append("null");
     } else {
       sb.append(this.aggregate);
-    }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("value:");
-    if (this.value == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.value);
     }
     first = false;
     sb.append(")");
@@ -376,12 +469,16 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
-    if (!isSetAggregate()) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'aggregate' is unset! Struct:" + toString());
+    if (!isSetColumn()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'column' is unset! Struct:" + toString());
     }
 
-    if (!isSetValue()) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'value' is unset! Struct:" + toString());
+    if (!isSetType()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'type' is unset! Struct:" + toString());
+    }
+
+    if (!isSetAggregate()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'aggregate' is unset! Struct:" + toString());
     }
 
   }
@@ -420,19 +517,26 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
           break;
         }
         switch (schemeField.id) {
-          case 1: // AGGREGATE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.aggregate = Aggregate.findByValue(iprot.readI32());
-              struct.setAggregateIsSet(true);
+          case 1: // COLUMN
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.column = iprot.readString();
+              struct.setColumnIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // VALUE
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.value = new Value();
-              struct.value.read(iprot);
-              struct.setValueIsSet(true);
+          case 2: // TYPE
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.type = ColumnType.findByValue(iprot.readI32());
+              struct.setTypeIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 3: // AGGREGATE
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.aggregate = Aggregate.findByValue(iprot.readI32());
+              struct.setAggregateIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -450,14 +554,19 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
+      if (struct.column != null) {
+        oprot.writeFieldBegin(COLUMN_FIELD_DESC);
+        oprot.writeString(struct.column);
+        oprot.writeFieldEnd();
+      }
+      if (struct.type != null) {
+        oprot.writeFieldBegin(TYPE_FIELD_DESC);
+        oprot.writeI32(struct.type.getValue());
+        oprot.writeFieldEnd();
+      }
       if (struct.aggregate != null) {
         oprot.writeFieldBegin(AGGREGATE_FIELD_DESC);
         oprot.writeI32(struct.aggregate.getValue());
-        oprot.writeFieldEnd();
-      }
-      if (struct.value != null) {
-        oprot.writeFieldBegin(VALUE_FIELD_DESC);
-        struct.value.write(oprot);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -477,18 +586,20 @@ public class AggregateColumnSpec implements org.apache.thrift.TBase<AggregateCol
     @Override
     public void write(org.apache.thrift.protocol.TProtocol prot, AggregateColumnSpec struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
+      oprot.writeString(struct.column);
+      oprot.writeI32(struct.type.getValue());
       oprot.writeI32(struct.aggregate.getValue());
-      struct.value.write(oprot);
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, AggregateColumnSpec struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
+      struct.column = iprot.readString();
+      struct.setColumnIsSet(true);
+      struct.type = ColumnType.findByValue(iprot.readI32());
+      struct.setTypeIsSet(true);
       struct.aggregate = Aggregate.findByValue(iprot.readI32());
       struct.setAggregateIsSet(true);
-      struct.value = new Value();
-      struct.value.read(iprot);
-      struct.setValueIsSet(true);
     }
   }
 

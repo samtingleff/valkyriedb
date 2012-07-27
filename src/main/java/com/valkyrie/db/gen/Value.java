@@ -32,7 +32,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Value");
 
   private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -41,7 +41,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
   }
 
   private ColumnType type; // required
-  private String value; // required
+  private ColumnValue value; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -115,7 +115,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
     tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, ColumnType.class)));
     tmpMap.put(_Fields.VALUE, new org.apache.thrift.meta_data.FieldMetaData("value", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ColumnValue.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Value.class, metaDataMap);
   }
@@ -125,7 +125,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
 
   public Value(
     ColumnType type,
-    String value)
+    ColumnValue value)
   {
     this();
     this.type = type;
@@ -140,7 +140,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
       this.type = other.type;
     }
     if (other.isSetValue()) {
-      this.value = other.value;
+      this.value = new ColumnValue(other.value);
     }
   }
 
@@ -185,11 +185,11 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
     }
   }
 
-  public String getValue() {
+  public ColumnValue getValue() {
     return this.value;
   }
 
-  public void setValue(String value) {
+  public void setValue(ColumnValue value) {
     this.value = value;
   }
 
@@ -222,7 +222,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
       if (value == null) {
         unsetValue();
       } else {
-        setValue((String)value);
+        setValue((ColumnValue)value);
       }
       break;
 
@@ -429,8 +429,9 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
             }
             break;
           case 2: // VALUE
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.value = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+              struct.value = new ColumnValue();
+              struct.value.read(iprot);
               struct.setValueIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -456,7 +457,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
       }
       if (struct.value != null) {
         oprot.writeFieldBegin(VALUE_FIELD_DESC);
-        oprot.writeString(struct.value);
+        struct.value.write(oprot);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -477,7 +478,7 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
     public void write(org.apache.thrift.protocol.TProtocol prot, Value struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       oprot.writeI32(struct.type.getValue());
-      oprot.writeString(struct.value);
+      struct.value.write(oprot);
     }
 
     @Override
@@ -485,7 +486,8 @@ public class Value implements org.apache.thrift.TBase<Value, Value._Fields>, jav
       TTupleProtocol iprot = (TTupleProtocol) prot;
       struct.type = ColumnType.findByValue(iprot.readI32());
       struct.setTypeIsSet(true);
-      struct.value = iprot.readString();
+      struct.value = new ColumnValue();
+      struct.value.read(iprot);
       struct.setValueIsSet(true);
     }
   }

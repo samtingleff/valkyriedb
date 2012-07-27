@@ -60,31 +60,136 @@ class Operator(object):
   }
 
 class ColumnType(object):
-  ColumnType = 1
-  IntegerType = 2
-  LongType = 3
-  DoubleType = 4
-  StringType = 5
-  DateType = 6
+  IntegerType = 1
+  LongType = 2
+  DoubleType = 3
+  StringType = 4
+  BytesType = 5
 
   _VALUES_TO_NAMES = {
-    1: "ColumnType",
-    2: "IntegerType",
-    3: "LongType",
-    4: "DoubleType",
-    5: "StringType",
-    6: "DateType",
+    1: "IntegerType",
+    2: "LongType",
+    3: "DoubleType",
+    4: "StringType",
+    5: "BytesType",
   }
 
   _NAMES_TO_VALUES = {
-    "ColumnType": 1,
-    "IntegerType": 2,
-    "LongType": 3,
-    "DoubleType": 4,
-    "StringType": 5,
-    "DateType": 6,
+    "IntegerType": 1,
+    "LongType": 2,
+    "DoubleType": 3,
+    "StringType": 4,
+    "BytesType": 5,
   }
 
+
+class ColumnValue(object):
+  """
+  Attributes:
+   - v_int
+   - v_long
+   - v_double
+   - v_string
+   - v_bytes
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.I32, 'v_int', None, None, ), # 1
+    (2, TType.I64, 'v_long', None, None, ), # 2
+    (3, TType.DOUBLE, 'v_double', None, None, ), # 3
+    (4, TType.STRING, 'v_string', None, None, ), # 4
+    (5, TType.STRING, 'v_bytes', None, None, ), # 5
+  )
+
+  def __init__(self, v_int=None, v_long=None, v_double=None, v_string=None, v_bytes=None,):
+    self.v_int = v_int
+    self.v_long = v_long
+    self.v_double = v_double
+    self.v_string = v_string
+    self.v_bytes = v_bytes
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.I32:
+          self.v_int = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I64:
+          self.v_long = iprot.readI64();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.DOUBLE:
+          self.v_double = iprot.readDouble();
+        else:
+          iprot.skip(ftype)
+      elif fid == 4:
+        if ftype == TType.STRING:
+          self.v_string = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 5:
+        if ftype == TType.STRING:
+          self.v_bytes = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ColumnValue')
+    if self.v_int is not None:
+      oprot.writeFieldBegin('v_int', TType.I32, 1)
+      oprot.writeI32(self.v_int)
+      oprot.writeFieldEnd()
+    if self.v_long is not None:
+      oprot.writeFieldBegin('v_long', TType.I64, 2)
+      oprot.writeI64(self.v_long)
+      oprot.writeFieldEnd()
+    if self.v_double is not None:
+      oprot.writeFieldBegin('v_double', TType.DOUBLE, 3)
+      oprot.writeDouble(self.v_double)
+      oprot.writeFieldEnd()
+    if self.v_string is not None:
+      oprot.writeFieldBegin('v_string', TType.STRING, 4)
+      oprot.writeString(self.v_string)
+      oprot.writeFieldEnd()
+    if self.v_bytes is not None:
+      oprot.writeFieldBegin('v_bytes', TType.STRING, 5)
+      oprot.writeString(self.v_bytes)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
 
 class Value(object):
   """
@@ -96,7 +201,7 @@ class Value(object):
   thrift_spec = (
     None, # 0
     (1, TType.I32, 'type', None, None, ), # 1
-    (2, TType.STRING, 'value', None, None, ), # 2
+    (2, TType.STRUCT, 'value', (ColumnValue, ColumnValue.thrift_spec), None, ), # 2
   )
 
   def __init__(self, type=None, value=None,):
@@ -118,8 +223,9 @@ class Value(object):
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.STRING:
-          self.value = iprot.readString();
+        if ftype == TType.STRUCT:
+          self.value = ColumnValue()
+          self.value.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -137,8 +243,8 @@ class Value(object):
       oprot.writeI32(self.type)
       oprot.writeFieldEnd()
     if self.value is not None:
-      oprot.writeFieldBegin('value', TType.STRING, 2)
-      oprot.writeString(self.value)
+      oprot.writeFieldBegin('value', TType.STRUCT, 2)
+      self.value.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -165,19 +271,22 @@ class Value(object):
 class AggregateColumnSpec(object):
   """
   Attributes:
+   - column
+   - type
    - aggregate
-   - value
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.I32, 'aggregate', None, None, ), # 1
-    (2, TType.STRUCT, 'value', (Value, Value.thrift_spec), None, ), # 2
+    (1, TType.STRING, 'column', None, None, ), # 1
+    (2, TType.I32, 'type', None, None, ), # 2
+    (3, TType.I32, 'aggregate', None, None, ), # 3
   )
 
-  def __init__(self, aggregate=None, value=None,):
+  def __init__(self, column=None, type=None, aggregate=None,):
+    self.column = column
+    self.type = type
     self.aggregate = aggregate
-    self.value = value
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -189,14 +298,18 @@ class AggregateColumnSpec(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.I32:
-          self.aggregate = iprot.readI32();
+        if ftype == TType.STRING:
+          self.column = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 2:
-        if ftype == TType.STRUCT:
-          self.value = Value()
-          self.value.read(iprot)
+        if ftype == TType.I32:
+          self.type = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.I32:
+          self.aggregate = iprot.readI32();
         else:
           iprot.skip(ftype)
       else:
@@ -209,22 +322,28 @@ class AggregateColumnSpec(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('AggregateColumnSpec')
-    if self.aggregate is not None:
-      oprot.writeFieldBegin('aggregate', TType.I32, 1)
-      oprot.writeI32(self.aggregate)
+    if self.column is not None:
+      oprot.writeFieldBegin('column', TType.STRING, 1)
+      oprot.writeString(self.column)
       oprot.writeFieldEnd()
-    if self.value is not None:
-      oprot.writeFieldBegin('value', TType.STRUCT, 2)
-      self.value.write(oprot)
+    if self.type is not None:
+      oprot.writeFieldBegin('type', TType.I32, 2)
+      oprot.writeI32(self.type)
+      oprot.writeFieldEnd()
+    if self.aggregate is not None:
+      oprot.writeFieldBegin('aggregate', TType.I32, 3)
+      oprot.writeI32(self.aggregate)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
   def validate(self):
+    if self.column is None:
+      raise TProtocol.TProtocolException(message='Required field column is unset!')
+    if self.type is None:
+      raise TProtocol.TProtocolException(message='Required field type is unset!')
     if self.aggregate is None:
       raise TProtocol.TProtocolException(message='Required field aggregate is unset!')
-    if self.value is None:
-      raise TProtocol.TProtocolException(message='Required field value is unset!')
     return
 
 

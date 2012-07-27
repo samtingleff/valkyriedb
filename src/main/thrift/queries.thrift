@@ -16,22 +16,30 @@ enum Operator {
 }
 
 enum ColumnType {
- ColumnType = 1,
- IntegerType = 2,
- LongType = 3,
- DoubleType = 4,
- StringType = 5,
- DateType = 6
+ IntegerType = 1,
+ LongType = 2,
+ DoubleType = 3,
+ StringType = 4,
+ BytesType = 5
+}
+
+union ColumnValue {
+ 1: i32 v_int;
+ 2: i64 v_long;
+ 3: double v_double;
+ 4: string v_string;
+ 5: binary v_bytes;
 }
 
 struct Value {
  1: required ColumnType type,
- 2: required string value
+ 2: required ColumnValue value
 }
 
 struct AggregateColumnSpec {
- 1: required Aggregate aggregate,
- 2: required Value value
+ 1: required string column,
+ 2: required ColumnType type,
+ 3: required Aggregate aggregate
 }
 
 struct Condition {

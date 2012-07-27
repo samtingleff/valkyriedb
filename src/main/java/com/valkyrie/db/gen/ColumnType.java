@@ -12,12 +12,11 @@ import java.util.HashMap;
 import org.apache.thrift.TEnum;
 
 public enum ColumnType implements org.apache.thrift.TEnum {
-  ColumnType(1),
-  IntegerType(2),
-  LongType(3),
-  DoubleType(4),
-  StringType(5),
-  DateType(6);
+  IntegerType(1),
+  LongType(2),
+  DoubleType(3),
+  StringType(4),
+  BytesType(5);
 
   private final int value;
 
@@ -39,17 +38,15 @@ public enum ColumnType implements org.apache.thrift.TEnum {
   public static ColumnType findByValue(int value) { 
     switch (value) {
       case 1:
-        return ColumnType;
-      case 2:
         return IntegerType;
-      case 3:
+      case 2:
         return LongType;
-      case 4:
+      case 3:
         return DoubleType;
-      case 5:
+      case 4:
         return StringType;
-      case 6:
-        return DateType;
+      case 5:
+        return BytesType;
       default:
         return null;
     }
