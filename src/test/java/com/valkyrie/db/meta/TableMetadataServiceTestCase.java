@@ -14,7 +14,7 @@ public class TableMetadataServiceTestCase extends TestCase {
 	private TableMetadataService service;
 
 	public void setUp() throws Exception {
-		service = new MemoryTableMetadataService();
+		service = TableMetadataServiceFactory.create();
 	}
 
 	public void testCreateTable() throws Exception {
