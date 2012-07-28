@@ -556,14 +556,14 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
           case 1: // COLUMNS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                struct.columns = new ArrayList<AggregateColumnSpec>(_list0.size);
-                for (int _i1 = 0; _i1 < _list0.size; ++_i1)
+                org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
+                struct.columns = new ArrayList<AggregateColumnSpec>(_list16.size);
+                for (int _i17 = 0; _i17 < _list16.size; ++_i17)
                 {
-                  AggregateColumnSpec _elem2; // required
-                  _elem2 = new AggregateColumnSpec();
-                  _elem2.read(iprot);
-                  struct.columns.add(_elem2);
+                  AggregateColumnSpec _elem18; // required
+                  _elem18 = new AggregateColumnSpec();
+                  _elem18.read(iprot);
+                  struct.columns.add(_elem18);
                 }
                 iprot.readListEnd();
               }
@@ -575,14 +575,14 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
           case 2: // CONDITIONS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list3 = iprot.readListBegin();
-                struct.conditions = new ArrayList<Condition>(_list3.size);
-                for (int _i4 = 0; _i4 < _list3.size; ++_i4)
+                org.apache.thrift.protocol.TList _list19 = iprot.readListBegin();
+                struct.conditions = new ArrayList<Condition>(_list19.size);
+                for (int _i20 = 0; _i20 < _list19.size; ++_i20)
                 {
-                  Condition _elem5; // required
-                  _elem5 = new Condition();
-                  _elem5.read(iprot);
-                  struct.conditions.add(_elem5);
+                  Condition _elem21; // required
+                  _elem21 = new Condition();
+                  _elem21.read(iprot);
+                  struct.conditions.add(_elem21);
                 }
                 iprot.readListEnd();
               }
@@ -594,14 +594,14 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
           case 3: // GROUPINGS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list6 = iprot.readListBegin();
-                struct.groupings = new ArrayList<Grouping>(_list6.size);
-                for (int _i7 = 0; _i7 < _list6.size; ++_i7)
+                org.apache.thrift.protocol.TList _list22 = iprot.readListBegin();
+                struct.groupings = new ArrayList<Grouping>(_list22.size);
+                for (int _i23 = 0; _i23 < _list22.size; ++_i23)
                 {
-                  Grouping _elem8; // required
-                  _elem8 = new Grouping();
-                  _elem8.read(iprot);
-                  struct.groupings.add(_elem8);
+                  Grouping _elem24; // required
+                  _elem24 = new Grouping();
+                  _elem24.read(iprot);
+                  struct.groupings.add(_elem24);
                 }
                 iprot.readListEnd();
               }
@@ -627,9 +627,9 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
         oprot.writeFieldBegin(COLUMNS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.columns.size()));
-          for (AggregateColumnSpec _iter9 : struct.columns)
+          for (AggregateColumnSpec _iter25 : struct.columns)
           {
-            _iter9.write(oprot);
+            _iter25.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -639,9 +639,9 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
         oprot.writeFieldBegin(CONDITIONS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.conditions.size()));
-          for (Condition _iter10 : struct.conditions)
+          for (Condition _iter26 : struct.conditions)
           {
-            _iter10.write(oprot);
+            _iter26.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -651,9 +651,9 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
         oprot.writeFieldBegin(GROUPINGS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.groupings.size()));
-          for (Grouping _iter11 : struct.groupings)
+          for (Grouping _iter27 : struct.groupings)
           {
-            _iter11.write(oprot);
+            _iter27.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -678,23 +678,23 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
       TTupleProtocol oprot = (TTupleProtocol) prot;
       {
         oprot.writeI32(struct.columns.size());
-        for (AggregateColumnSpec _iter12 : struct.columns)
+        for (AggregateColumnSpec _iter28 : struct.columns)
         {
-          _iter12.write(oprot);
+          _iter28.write(oprot);
         }
       }
       {
         oprot.writeI32(struct.conditions.size());
-        for (Condition _iter13 : struct.conditions)
+        for (Condition _iter29 : struct.conditions)
         {
-          _iter13.write(oprot);
+          _iter29.write(oprot);
         }
       }
       {
         oprot.writeI32(struct.groupings.size());
-        for (Grouping _iter14 : struct.groupings)
+        for (Grouping _iter30 : struct.groupings)
         {
-          _iter14.write(oprot);
+          _iter30.write(oprot);
         }
       }
     }
@@ -703,38 +703,38 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
     public void read(org.apache.thrift.protocol.TProtocol prot, Query struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       {
-        org.apache.thrift.protocol.TList _list15 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.columns = new ArrayList<AggregateColumnSpec>(_list15.size);
-        for (int _i16 = 0; _i16 < _list15.size; ++_i16)
+        org.apache.thrift.protocol.TList _list31 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.columns = new ArrayList<AggregateColumnSpec>(_list31.size);
+        for (int _i32 = 0; _i32 < _list31.size; ++_i32)
         {
-          AggregateColumnSpec _elem17; // required
-          _elem17 = new AggregateColumnSpec();
-          _elem17.read(iprot);
-          struct.columns.add(_elem17);
+          AggregateColumnSpec _elem33; // required
+          _elem33 = new AggregateColumnSpec();
+          _elem33.read(iprot);
+          struct.columns.add(_elem33);
         }
       }
       struct.setColumnsIsSet(true);
       {
-        org.apache.thrift.protocol.TList _list18 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.conditions = new ArrayList<Condition>(_list18.size);
-        for (int _i19 = 0; _i19 < _list18.size; ++_i19)
+        org.apache.thrift.protocol.TList _list34 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.conditions = new ArrayList<Condition>(_list34.size);
+        for (int _i35 = 0; _i35 < _list34.size; ++_i35)
         {
-          Condition _elem20; // required
-          _elem20 = new Condition();
-          _elem20.read(iprot);
-          struct.conditions.add(_elem20);
+          Condition _elem36; // required
+          _elem36 = new Condition();
+          _elem36.read(iprot);
+          struct.conditions.add(_elem36);
         }
       }
       struct.setConditionsIsSet(true);
       {
-        org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.groupings = new ArrayList<Grouping>(_list21.size);
-        for (int _i22 = 0; _i22 < _list21.size; ++_i22)
+        org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.groupings = new ArrayList<Grouping>(_list37.size);
+        for (int _i38 = 0; _i38 < _list37.size; ++_i38)
         {
-          Grouping _elem23; // required
-          _elem23 = new Grouping();
-          _elem23.read(iprot);
-          struct.groupings.add(_elem23);
+          Grouping _elem39; // required
+          _elem39 = new Grouping();
+          _elem39.read(iprot);
+          struct.groupings.add(_elem39);
         }
       }
       struct.setGroupingsIsSet(true);

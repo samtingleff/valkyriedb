@@ -28,22 +28,22 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryResult._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("QueryResult");
+public class ColumnValueList implements org.apache.thrift.TBase<ColumnValueList, ColumnValueList._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ColumnValueList");
 
-  private static final org.apache.thrift.protocol.TField ROWS_FIELD_DESC = new org.apache.thrift.protocol.TField("rows", org.apache.thrift.protocol.TType.LIST, (short)1);
+  private static final org.apache.thrift.protocol.TField VALUES_FIELD_DESC = new org.apache.thrift.protocol.TField("values", org.apache.thrift.protocol.TType.LIST, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new QueryResultStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new QueryResultTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new ColumnValueListStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new ColumnValueListTupleSchemeFactory());
   }
 
-  private List<Row> rows; // required
+  private List<ColumnValue> values; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    ROWS((short)1, "rows");
+    VALUES((short)1, "values");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -58,8 +58,8 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // ROWS
-          return ROWS;
+        case 1: // VALUES
+          return VALUES;
         default:
           return null;
       }
@@ -103,90 +103,90 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.ROWS, new org.apache.thrift.meta_data.FieldMetaData("rows", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+    tmpMap.put(_Fields.VALUES, new org.apache.thrift.meta_data.FieldMetaData("values", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Row.class))));
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ColumnValue.class))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(QueryResult.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ColumnValueList.class, metaDataMap);
   }
 
-  public QueryResult() {
+  public ColumnValueList() {
   }
 
-  public QueryResult(
-    List<Row> rows)
+  public ColumnValueList(
+    List<ColumnValue> values)
   {
     this();
-    this.rows = rows;
+    this.values = values;
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public QueryResult(QueryResult other) {
-    if (other.isSetRows()) {
-      List<Row> __this__rows = new ArrayList<Row>();
-      for (Row other_element : other.rows) {
-        __this__rows.add(new Row(other_element));
+  public ColumnValueList(ColumnValueList other) {
+    if (other.isSetValues()) {
+      List<ColumnValue> __this__values = new ArrayList<ColumnValue>();
+      for (ColumnValue other_element : other.values) {
+        __this__values.add(new ColumnValue(other_element));
       }
-      this.rows = __this__rows;
+      this.values = __this__values;
     }
   }
 
-  public QueryResult deepCopy() {
-    return new QueryResult(this);
+  public ColumnValueList deepCopy() {
+    return new ColumnValueList(this);
   }
 
   @Override
   public void clear() {
-    this.rows = null;
+    this.values = null;
   }
 
-  public int getRowsSize() {
-    return (this.rows == null) ? 0 : this.rows.size();
+  public int getValuesSize() {
+    return (this.values == null) ? 0 : this.values.size();
   }
 
-  public java.util.Iterator<Row> getRowsIterator() {
-    return (this.rows == null) ? null : this.rows.iterator();
+  public java.util.Iterator<ColumnValue> getValuesIterator() {
+    return (this.values == null) ? null : this.values.iterator();
   }
 
-  public void addToRows(Row elem) {
-    if (this.rows == null) {
-      this.rows = new ArrayList<Row>();
+  public void addToValues(ColumnValue elem) {
+    if (this.values == null) {
+      this.values = new ArrayList<ColumnValue>();
     }
-    this.rows.add(elem);
+    this.values.add(elem);
   }
 
-  public List<Row> getRows() {
-    return this.rows;
+  public List<ColumnValue> getValues() {
+    return this.values;
   }
 
-  public void setRows(List<Row> rows) {
-    this.rows = rows;
+  public void setValues(List<ColumnValue> values) {
+    this.values = values;
   }
 
-  public void unsetRows() {
-    this.rows = null;
+  public void unsetValues() {
+    this.values = null;
   }
 
-  /** Returns true if field rows is set (has been assigned a value) and false otherwise */
-  public boolean isSetRows() {
-    return this.rows != null;
+  /** Returns true if field values is set (has been assigned a value) and false otherwise */
+  public boolean isSetValues() {
+    return this.values != null;
   }
 
-  public void setRowsIsSet(boolean value) {
+  public void setValuesIsSet(boolean value) {
     if (!value) {
-      this.rows = null;
+      this.values = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case ROWS:
+    case VALUES:
       if (value == null) {
-        unsetRows();
+        unsetValues();
       } else {
-        setRows((List<Row>)value);
+        setValues((List<ColumnValue>)value);
       }
       break;
 
@@ -195,8 +195,8 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case ROWS:
-      return getRows();
+    case VALUES:
+      return getValues();
 
     }
     throw new IllegalStateException();
@@ -209,8 +209,8 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
     }
 
     switch (field) {
-    case ROWS:
-      return isSetRows();
+    case VALUES:
+      return isSetValues();
     }
     throw new IllegalStateException();
   }
@@ -219,21 +219,21 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof QueryResult)
-      return this.equals((QueryResult)that);
+    if (that instanceof ColumnValueList)
+      return this.equals((ColumnValueList)that);
     return false;
   }
 
-  public boolean equals(QueryResult that) {
+  public boolean equals(ColumnValueList that) {
     if (that == null)
       return false;
 
-    boolean this_present_rows = true && this.isSetRows();
-    boolean that_present_rows = true && that.isSetRows();
-    if (this_present_rows || that_present_rows) {
-      if (!(this_present_rows && that_present_rows))
+    boolean this_present_values = true && this.isSetValues();
+    boolean that_present_values = true && that.isSetValues();
+    if (this_present_values || that_present_values) {
+      if (!(this_present_values && that_present_values))
         return false;
-      if (!this.rows.equals(that.rows))
+      if (!this.values.equals(that.values))
         return false;
     }
 
@@ -244,28 +244,28 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
 
-    boolean present_rows = true && (isSetRows());
-    builder.append(present_rows);
-    if (present_rows)
-      builder.append(rows);
+    boolean present_values = true && (isSetValues());
+    builder.append(present_values);
+    if (present_values)
+      builder.append(values);
 
     return builder.toHashCode();
   }
 
-  public int compareTo(QueryResult other) {
+  public int compareTo(ColumnValueList other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    QueryResult typedOther = (QueryResult)other;
+    ColumnValueList typedOther = (ColumnValueList)other;
 
-    lastComparison = Boolean.valueOf(isSetRows()).compareTo(typedOther.isSetRows());
+    lastComparison = Boolean.valueOf(isSetValues()).compareTo(typedOther.isSetValues());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetRows()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.rows, typedOther.rows);
+    if (isSetValues()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.values, typedOther.values);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -287,14 +287,14 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("QueryResult(");
+    StringBuilder sb = new StringBuilder("ColumnValueList(");
     boolean first = true;
 
-    sb.append("rows:");
-    if (this.rows == null) {
+    sb.append("values:");
+    if (this.values == null) {
       sb.append("null");
     } else {
-      sb.append(this.rows);
+      sb.append(this.values);
     }
     first = false;
     sb.append(")");
@@ -303,10 +303,6 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
-    if (!isSetRows()) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'rows' is unset! Struct:" + toString());
-    }
-
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -325,15 +321,15 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
     }
   }
 
-  private static class QueryResultStandardSchemeFactory implements SchemeFactory {
-    public QueryResultStandardScheme getScheme() {
-      return new QueryResultStandardScheme();
+  private static class ColumnValueListStandardSchemeFactory implements SchemeFactory {
+    public ColumnValueListStandardScheme getScheme() {
+      return new ColumnValueListStandardScheme();
     }
   }
 
-  private static class QueryResultStandardScheme extends StandardScheme<QueryResult> {
+  private static class ColumnValueListStandardScheme extends StandardScheme<ColumnValueList> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, QueryResult struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, ColumnValueList struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -343,21 +339,21 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
           break;
         }
         switch (schemeField.id) {
-          case 1: // ROWS
+          case 1: // VALUES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list48 = iprot.readListBegin();
-                struct.rows = new ArrayList<Row>(_list48.size);
-                for (int _i49 = 0; _i49 < _list48.size; ++_i49)
+                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
+                struct.values = new ArrayList<ColumnValue>(_list8.size);
+                for (int _i9 = 0; _i9 < _list8.size; ++_i9)
                 {
-                  Row _elem50; // required
-                  _elem50 = new Row();
-                  _elem50.read(iprot);
-                  struct.rows.add(_elem50);
+                  ColumnValue _elem10; // required
+                  _elem10 = new ColumnValue();
+                  _elem10.read(iprot);
+                  struct.values.add(_elem10);
                 }
                 iprot.readListEnd();
               }
-              struct.setRowsIsSet(true);
+              struct.setValuesIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -371,17 +367,17 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, QueryResult struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, ColumnValueList struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.rows != null) {
-        oprot.writeFieldBegin(ROWS_FIELD_DESC);
+      if (struct.values != null) {
+        oprot.writeFieldBegin(VALUES_FIELD_DESC);
         {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.rows.size()));
-          for (Row _iter51 : struct.rows)
+          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.values.size()));
+          for (ColumnValue _iter11 : struct.values)
           {
-            _iter51.write(oprot);
+            _iter11.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -393,41 +389,51 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
 
   }
 
-  private static class QueryResultTupleSchemeFactory implements SchemeFactory {
-    public QueryResultTupleScheme getScheme() {
-      return new QueryResultTupleScheme();
+  private static class ColumnValueListTupleSchemeFactory implements SchemeFactory {
+    public ColumnValueListTupleScheme getScheme() {
+      return new ColumnValueListTupleScheme();
     }
   }
 
-  private static class QueryResultTupleScheme extends TupleScheme<QueryResult> {
+  private static class ColumnValueListTupleScheme extends TupleScheme<ColumnValueList> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, QueryResult struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, ColumnValueList struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
-      {
-        oprot.writeI32(struct.rows.size());
-        for (Row _iter52 : struct.rows)
+      BitSet optionals = new BitSet();
+      if (struct.isSetValues()) {
+        optionals.set(0);
+      }
+      oprot.writeBitSet(optionals, 1);
+      if (struct.isSetValues()) {
         {
-          _iter52.write(oprot);
+          oprot.writeI32(struct.values.size());
+          for (ColumnValue _iter12 : struct.values)
+          {
+            _iter12.write(oprot);
+          }
         }
       }
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, QueryResult struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, ColumnValueList struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      {
-        org.apache.thrift.protocol.TList _list53 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.rows = new ArrayList<Row>(_list53.size);
-        for (int _i54 = 0; _i54 < _list53.size; ++_i54)
+      BitSet incoming = iprot.readBitSet(1);
+      if (incoming.get(0)) {
         {
-          Row _elem55; // required
-          _elem55 = new Row();
-          _elem55.read(iprot);
-          struct.rows.add(_elem55);
+          org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.values = new ArrayList<ColumnValue>(_list13.size);
+          for (int _i14 = 0; _i14 < _list13.size; ++_i14)
+          {
+            ColumnValue _elem15; // required
+            _elem15 = new ColumnValue();
+            _elem15.read(iprot);
+            struct.values.add(_elem15);
+          }
         }
+        struct.setValuesIsSet(true);
       }
-      struct.setRowsIsSet(true);
     }
   }
 

@@ -23,6 +23,9 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print 'Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] function [arg1 [arg2...]]'
   print ''
   print 'Functions:'
+  print '  void createTable(TableSpec table)'
+  print '  void dropTable(string table)'
+  print '  void insert(string table,  columns,  values)'
   print '  QueryResult select(Query query)'
   print ''
   sys.exit(0)
@@ -75,7 +78,25 @@ protocol = TBinaryProtocol.TBinaryProtocol(transport)
 client = QueryService.Client(protocol)
 transport.open()
 
-if cmd == 'select':
+if cmd == 'createTable':
+  if len(args) != 1:
+    print 'createTable requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.createTable(eval(args[0]),))
+
+elif cmd == 'dropTable':
+  if len(args) != 1:
+    print 'dropTable requires 1 args'
+    sys.exit(1)
+  pp.pprint(client.dropTable(args[0],))
+
+elif cmd == 'insert':
+  if len(args) != 3:
+    print 'insert requires 3 args'
+    sys.exit(1)
+  pp.pprint(client.insert(args[0],eval(args[1]),eval(args[2]),))
+
+elif cmd == 'select':
   if len(args) != 1:
     print 'select requires 1 args'
     sys.exit(1)

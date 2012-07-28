@@ -18,6 +18,29 @@ except:
 
 
 class Iface(object):
+  def createTable(self, table):
+    """
+    Parameters:
+     - table
+    """
+    pass
+
+  def dropTable(self, table):
+    """
+    Parameters:
+     - table
+    """
+    pass
+
+  def insert(self, table, columns, values):
+    """
+    Parameters:
+     - table
+     - columns
+     - values
+    """
+    pass
+
   def select(self, query):
     """
     Parameters:
@@ -32,6 +55,94 @@ class Client(Iface):
     if oprot is not None:
       self._oprot = oprot
     self._seqid = 0
+
+  def createTable(self, table):
+    """
+    Parameters:
+     - table
+    """
+    self.send_createTable(table)
+    self.recv_createTable()
+
+  def send_createTable(self, table):
+    self._oprot.writeMessageBegin('createTable', TMessageType.CALL, self._seqid)
+    args = createTable_args()
+    args.table = table
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_createTable(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = createTable_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def dropTable(self, table):
+    """
+    Parameters:
+     - table
+    """
+    self.send_dropTable(table)
+    self.recv_dropTable()
+
+  def send_dropTable(self, table):
+    self._oprot.writeMessageBegin('dropTable', TMessageType.CALL, self._seqid)
+    args = dropTable_args()
+    args.table = table
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_dropTable(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = dropTable_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
+
+  def insert(self, table, columns, values):
+    """
+    Parameters:
+     - table
+     - columns
+     - values
+    """
+    self.send_insert(table, columns, values)
+    self.recv_insert()
+
+  def send_insert(self, table, columns, values):
+    self._oprot.writeMessageBegin('insert', TMessageType.CALL, self._seqid)
+    args = insert_args()
+    args.table = table
+    args.columns = columns
+    args.values = values
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_insert(self, ):
+    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(self._iprot)
+      self._iprot.readMessageEnd()
+      raise x
+    result = insert_result()
+    result.read(self._iprot)
+    self._iprot.readMessageEnd()
+    return
 
   def select(self, query):
     """
@@ -68,6 +179,9 @@ class Processor(Iface, TProcessor):
   def __init__(self, handler):
     self._handler = handler
     self._processMap = {}
+    self._processMap["createTable"] = Processor.process_createTable
+    self._processMap["dropTable"] = Processor.process_dropTable
+    self._processMap["insert"] = Processor.process_insert
     self._processMap["select"] = Processor.process_select
 
   def process(self, iprot, oprot):
@@ -85,6 +199,39 @@ class Processor(Iface, TProcessor):
       self._processMap[name](self, seqid, iprot, oprot)
     return True
 
+  def process_createTable(self, seqid, iprot, oprot):
+    args = createTable_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = createTable_result()
+    self._handler.createTable(args.table)
+    oprot.writeMessageBegin("createTable", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_dropTable(self, seqid, iprot, oprot):
+    args = dropTable_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = dropTable_result()
+    self._handler.dropTable(args.table)
+    oprot.writeMessageBegin("dropTable", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_insert(self, seqid, iprot, oprot):
+    args = insert_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = insert_result()
+    self._handler.insert(args.table, args.columns, args.values)
+    oprot.writeMessageBegin("insert", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
   def process_select(self, seqid, iprot, oprot):
     args = select_args()
     args.read(iprot)
@@ -98,6 +245,354 @@ class Processor(Iface, TProcessor):
 
 
 # HELPER FUNCTIONS AND STRUCTURES
+
+class createTable_args(object):
+  """
+  Attributes:
+   - table
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'table', (TableSpec, TableSpec.thrift_spec), None, ), # 1
+  )
+
+  def __init__(self, table=None,):
+    self.table = table
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.table = TableSpec()
+          self.table.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('createTable_args')
+    if self.table is not None:
+      oprot.writeFieldBegin('table', TType.STRUCT, 1)
+      self.table.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class createTable_result(object):
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('createTable_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class dropTable_args(object):
+  """
+  Attributes:
+   - table
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'table', None, None, ), # 1
+  )
+
+  def __init__(self, table=None,):
+    self.table = table
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.table = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('dropTable_args')
+    if self.table is not None:
+      oprot.writeFieldBegin('table', TType.STRING, 1)
+      oprot.writeString(self.table)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class dropTable_result(object):
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('dropTable_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class insert_args(object):
+  """
+  Attributes:
+   - table
+   - columns
+   - values
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'table', None, None, ), # 1
+    (2, TType.LIST, 'columns', (TType.STRING,None), None, ), # 2
+    (3, TType.LIST, 'values', (TType.STRUCT,(ColumnValueList, ColumnValueList.thrift_spec)), None, ), # 3
+  )
+
+  def __init__(self, table=None, columns=None, values=None,):
+    self.table = table
+    self.columns = columns
+    self.values = values
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.table = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.columns = []
+          (_etype52, _size49) = iprot.readListBegin()
+          for _i53 in xrange(_size49):
+            _elem54 = iprot.readString();
+            self.columns.append(_elem54)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      elif fid == 3:
+        if ftype == TType.LIST:
+          self.values = []
+          (_etype58, _size55) = iprot.readListBegin()
+          for _i59 in xrange(_size55):
+            _elem60 = ColumnValueList()
+            _elem60.read(iprot)
+            self.values.append(_elem60)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('insert_args')
+    if self.table is not None:
+      oprot.writeFieldBegin('table', TType.STRING, 1)
+      oprot.writeString(self.table)
+      oprot.writeFieldEnd()
+    if self.columns is not None:
+      oprot.writeFieldBegin('columns', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRING, len(self.columns))
+      for iter61 in self.columns:
+        oprot.writeString(iter61)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    if self.values is not None:
+      oprot.writeFieldBegin('values', TType.LIST, 3)
+      oprot.writeListBegin(TType.STRUCT, len(self.values))
+      for iter62 in self.values:
+        iter62.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class insert_result(object):
+
+  thrift_spec = (
+  )
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('insert_result')
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
 
 class select_args(object):
   """

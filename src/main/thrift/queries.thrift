@@ -31,15 +31,28 @@ union ColumnValue {
  5: binary v_bytes;
 }
 
-struct Value {
- 1: required ColumnType type,
- 2: required ColumnValue value
+struct ColumnSpec {
+ 1: required string column,
+ 2: required ColumnType type
+}
+
+struct TableSpec {
+ 1: required string name,
+ 2: required list<ColumnSpec> columns
+}
+
+struct ColumnValueList {
+ 1: list<ColumnValue> values
 }
 
 struct AggregateColumnSpec {
- 1: required string column,
- 2: required ColumnType type,
- 3: required Aggregate aggregate
+ 1: required ColumnSpec column,
+ 2: required Aggregate aggregate
+}
+
+struct Value {
+ 1: required ColumnType type,
+ 2: required ColumnValue value
 }
 
 struct Condition {
@@ -67,6 +80,9 @@ struct QueryResult {
 }
 
 service QueryService {
+ void createTable(1: TableSpec table);
+ void dropTable(1: string table);
+ void insert(1: string table, 2: list<string> columns, 3: list<ColumnValueList> values);
  QueryResult select(1: Query query);
 }
 

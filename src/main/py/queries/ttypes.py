@@ -191,6 +191,313 @@ class ColumnValue(object):
   def __ne__(self, other):
     return not (self == other)
 
+class ColumnSpec(object):
+  """
+  Attributes:
+   - column
+   - type
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'column', None, None, ), # 1
+    (2, TType.I32, 'type', None, None, ), # 2
+  )
+
+  def __init__(self, column=None, type=None,):
+    self.column = column
+    self.type = type
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.column = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.type = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ColumnSpec')
+    if self.column is not None:
+      oprot.writeFieldBegin('column', TType.STRING, 1)
+      oprot.writeString(self.column)
+      oprot.writeFieldEnd()
+    if self.type is not None:
+      oprot.writeFieldBegin('type', TType.I32, 2)
+      oprot.writeI32(self.type)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.column is None:
+      raise TProtocol.TProtocolException(message='Required field column is unset!')
+    if self.type is None:
+      raise TProtocol.TProtocolException(message='Required field type is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class TableSpec(object):
+  """
+  Attributes:
+   - name
+   - columns
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'name', None, None, ), # 1
+    (2, TType.LIST, 'columns', (TType.STRUCT,(ColumnSpec, ColumnSpec.thrift_spec)), None, ), # 2
+  )
+
+  def __init__(self, name=None, columns=None,):
+    self.name = name
+    self.columns = columns
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.name = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.LIST:
+          self.columns = []
+          (_etype3, _size0) = iprot.readListBegin()
+          for _i4 in xrange(_size0):
+            _elem5 = ColumnSpec()
+            _elem5.read(iprot)
+            self.columns.append(_elem5)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('TableSpec')
+    if self.name is not None:
+      oprot.writeFieldBegin('name', TType.STRING, 1)
+      oprot.writeString(self.name)
+      oprot.writeFieldEnd()
+    if self.columns is not None:
+      oprot.writeFieldBegin('columns', TType.LIST, 2)
+      oprot.writeListBegin(TType.STRUCT, len(self.columns))
+      for iter6 in self.columns:
+        iter6.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.name is None:
+      raise TProtocol.TProtocolException(message='Required field name is unset!')
+    if self.columns is None:
+      raise TProtocol.TProtocolException(message='Required field columns is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class ColumnValueList(object):
+  """
+  Attributes:
+   - values
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.LIST, 'values', (TType.STRUCT,(ColumnValue, ColumnValue.thrift_spec)), None, ), # 1
+  )
+
+  def __init__(self, values=None,):
+    self.values = values
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.LIST:
+          self.values = []
+          (_etype10, _size7) = iprot.readListBegin()
+          for _i11 in xrange(_size7):
+            _elem12 = ColumnValue()
+            _elem12.read(iprot)
+            self.values.append(_elem12)
+          iprot.readListEnd()
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('ColumnValueList')
+    if self.values is not None:
+      oprot.writeFieldBegin('values', TType.LIST, 1)
+      oprot.writeListBegin(TType.STRUCT, len(self.values))
+      for iter13 in self.values:
+        iter13.write(oprot)
+      oprot.writeListEnd()
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class AggregateColumnSpec(object):
+  """
+  Attributes:
+   - column
+   - aggregate
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'column', (ColumnSpec, ColumnSpec.thrift_spec), None, ), # 1
+    (2, TType.I32, 'aggregate', None, None, ), # 2
+  )
+
+  def __init__(self, column=None, aggregate=None,):
+    self.column = column
+    self.aggregate = aggregate
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.column = ColumnSpec()
+          self.column.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.I32:
+          self.aggregate = iprot.readI32();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('AggregateColumnSpec')
+    if self.column is not None:
+      oprot.writeFieldBegin('column', TType.STRUCT, 1)
+      self.column.write(oprot)
+      oprot.writeFieldEnd()
+    if self.aggregate is not None:
+      oprot.writeFieldBegin('aggregate', TType.I32, 2)
+      oprot.writeI32(self.aggregate)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    if self.column is None:
+      raise TProtocol.TProtocolException(message='Required field column is unset!')
+    if self.aggregate is None:
+      raise TProtocol.TProtocolException(message='Required field aggregate is unset!')
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class Value(object):
   """
   Attributes:
@@ -254,96 +561,6 @@ class Value(object):
       raise TProtocol.TProtocolException(message='Required field type is unset!')
     if self.value is None:
       raise TProtocol.TProtocolException(message='Required field value is unset!')
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class AggregateColumnSpec(object):
-  """
-  Attributes:
-   - column
-   - type
-   - aggregate
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'column', None, None, ), # 1
-    (2, TType.I32, 'type', None, None, ), # 2
-    (3, TType.I32, 'aggregate', None, None, ), # 3
-  )
-
-  def __init__(self, column=None, type=None, aggregate=None,):
-    self.column = column
-    self.type = type
-    self.aggregate = aggregate
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRING:
-          self.column = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.I32:
-          self.type = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
-        if ftype == TType.I32:
-          self.aggregate = iprot.readI32();
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('AggregateColumnSpec')
-    if self.column is not None:
-      oprot.writeFieldBegin('column', TType.STRING, 1)
-      oprot.writeString(self.column)
-      oprot.writeFieldEnd()
-    if self.type is not None:
-      oprot.writeFieldBegin('type', TType.I32, 2)
-      oprot.writeI32(self.type)
-      oprot.writeFieldEnd()
-    if self.aggregate is not None:
-      oprot.writeFieldBegin('aggregate', TType.I32, 3)
-      oprot.writeI32(self.aggregate)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    if self.column is None:
-      raise TProtocol.TProtocolException(message='Required field column is unset!')
-    if self.type is None:
-      raise TProtocol.TProtocolException(message='Required field type is unset!')
-    if self.aggregate is None:
-      raise TProtocol.TProtocolException(message='Required field aggregate is unset!')
     return
 
 
@@ -543,33 +760,33 @@ class Query(object):
       if fid == 1:
         if ftype == TType.LIST:
           self.columns = []
-          (_etype3, _size0) = iprot.readListBegin()
-          for _i4 in xrange(_size0):
-            _elem5 = AggregateColumnSpec()
-            _elem5.read(iprot)
-            self.columns.append(_elem5)
+          (_etype17, _size14) = iprot.readListBegin()
+          for _i18 in xrange(_size14):
+            _elem19 = AggregateColumnSpec()
+            _elem19.read(iprot)
+            self.columns.append(_elem19)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 2:
         if ftype == TType.LIST:
           self.conditions = []
-          (_etype9, _size6) = iprot.readListBegin()
-          for _i10 in xrange(_size6):
-            _elem11 = Condition()
-            _elem11.read(iprot)
-            self.conditions.append(_elem11)
+          (_etype23, _size20) = iprot.readListBegin()
+          for _i24 in xrange(_size20):
+            _elem25 = Condition()
+            _elem25.read(iprot)
+            self.conditions.append(_elem25)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
       elif fid == 3:
         if ftype == TType.LIST:
           self.groupings = []
-          (_etype15, _size12) = iprot.readListBegin()
-          for _i16 in xrange(_size12):
-            _elem17 = Grouping()
-            _elem17.read(iprot)
-            self.groupings.append(_elem17)
+          (_etype29, _size26) = iprot.readListBegin()
+          for _i30 in xrange(_size26):
+            _elem31 = Grouping()
+            _elem31.read(iprot)
+            self.groupings.append(_elem31)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -586,22 +803,22 @@ class Query(object):
     if self.columns is not None:
       oprot.writeFieldBegin('columns', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.columns))
-      for iter18 in self.columns:
-        iter18.write(oprot)
+      for iter32 in self.columns:
+        iter32.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.conditions is not None:
       oprot.writeFieldBegin('conditions', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.conditions))
-      for iter19 in self.conditions:
-        iter19.write(oprot)
+      for iter33 in self.conditions:
+        iter33.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.groupings is not None:
       oprot.writeFieldBegin('groupings', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.groupings))
-      for iter20 in self.groupings:
-        iter20.write(oprot)
+      for iter34 in self.groupings:
+        iter34.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -654,11 +871,11 @@ class Row(object):
       if fid == 1:
         if ftype == TType.LIST:
           self.values = []
-          (_etype24, _size21) = iprot.readListBegin()
-          for _i25 in xrange(_size21):
-            _elem26 = Value()
-            _elem26.read(iprot)
-            self.values.append(_elem26)
+          (_etype38, _size35) = iprot.readListBegin()
+          for _i39 in xrange(_size35):
+            _elem40 = Value()
+            _elem40.read(iprot)
+            self.values.append(_elem40)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -675,8 +892,8 @@ class Row(object):
     if self.values is not None:
       oprot.writeFieldBegin('values', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.values))
-      for iter27 in self.values:
-        iter27.write(oprot)
+      for iter41 in self.values:
+        iter41.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
@@ -725,11 +942,11 @@ class QueryResult(object):
       if fid == 1:
         if ftype == TType.LIST:
           self.rows = []
-          (_etype31, _size28) = iprot.readListBegin()
-          for _i32 in xrange(_size28):
-            _elem33 = Row()
-            _elem33.read(iprot)
-            self.rows.append(_elem33)
+          (_etype45, _size42) = iprot.readListBegin()
+          for _i46 in xrange(_size42):
+            _elem47 = Row()
+            _elem47.read(iprot)
+            self.rows.append(_elem47)
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
@@ -746,8 +963,8 @@ class QueryResult(object):
     if self.rows is not None:
       oprot.writeFieldBegin('rows', TType.LIST, 1)
       oprot.writeListBegin(TType.STRUCT, len(self.rows))
-      for iter34 in self.rows:
-        iter34.write(oprot)
+      for iter48 in self.rows:
+        iter48.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
