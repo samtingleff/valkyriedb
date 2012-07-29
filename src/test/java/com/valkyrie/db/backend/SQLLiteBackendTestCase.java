@@ -40,9 +40,12 @@ public class SQLLiteBackendTestCase extends TestCase {
 		QueryResult qr = backend.select(
 				new Query(
 						ts.getName(),
-						Collections.singletonList(
+						Arrays.asList(
 								new AggregateColumnSpec(
 										new ColumnSpec("a_int", ColumnType.IntegerType),
+										Aggregate.None),
+								new AggregateColumnSpec(
+										new ColumnSpec("b_long", ColumnType.LongType),
 										Aggregate.None)),
 						Collections.EMPTY_LIST,
 						Collections.EMPTY_LIST));
@@ -53,8 +56,9 @@ public class SQLLiteBackendTestCase extends TestCase {
 		Row row = rows.get(0);
 		List<Value> columns = row.getValues();
 		assertNotNull(columns);
-		assertEquals(columns.size(), 1);
+		assertEquals(columns.size(), 2);
 		assertEquals(columns.get(0).getValue().getV_int(), 12);
+		assertEquals(columns.get(1).getValue().getV_long(), 0);
 	}
 
 	private TableSpec createTableSpec() {

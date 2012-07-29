@@ -119,12 +119,12 @@ public class SQLLiteBackend implements StorageBackend {
 			while (st.step()) {
 				Row row = new Row();
 				int count = st.columnCount();
-				for (int i = 1; i <= count; ++i) {
+				for (int i = 0; i < count; ++i) {
 					Value v = new Value();
-					ColumnSpec cs = columns.get(i -1 ).getColumn();
+					ColumnSpec cs = columns.get(i).getColumn();
 					v.setType(cs.getType());
 					ColumnValue cv = new ColumnValue();
-					setColumnValue(st, cs.getType(), i - 1, cv);
+					setColumnValue(st, cs.getType(), i, cv);
 					v.setValue(cv);
 					row.addToValues(v);
 				}
