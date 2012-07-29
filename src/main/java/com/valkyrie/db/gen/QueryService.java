@@ -34,7 +34,7 @@ public class QueryService {
 
     public void execute(String sql) throws org.apache.thrift.TException;
 
-    public void insert(String table, List<Column> columns, List<ColumnValueList> values) throws org.apache.thrift.TException;
+    public void write(WriteOperation op) throws org.apache.thrift.TException;
 
     public QueryResult select(Query query) throws org.apache.thrift.TException;
 
@@ -44,7 +44,7 @@ public class QueryService {
 
     public void execute(String sql, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.execute_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void insert(String table, List<Column> columns, List<ColumnValueList> values, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.insert_call> resultHandler) throws org.apache.thrift.TException;
+    public void write(WriteOperation op, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.write_call> resultHandler) throws org.apache.thrift.TException;
 
     public void select(Query query, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.select_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -90,25 +90,23 @@ public class QueryService {
       return;
     }
 
-    public void insert(String table, List<Column> columns, List<ColumnValueList> values) throws org.apache.thrift.TException
+    public void write(WriteOperation op) throws org.apache.thrift.TException
     {
-      send_insert(table, columns, values);
-      recv_insert();
+      send_write(op);
+      recv_write();
     }
 
-    public void send_insert(String table, List<Column> columns, List<ColumnValueList> values) throws org.apache.thrift.TException
+    public void send_write(WriteOperation op) throws org.apache.thrift.TException
     {
-      insert_args args = new insert_args();
-      args.setTable(table);
-      args.setColumns(columns);
-      args.setValues(values);
-      sendBase("insert", args);
+      write_args args = new write_args();
+      args.setOp(op);
+      sendBase("write", args);
     }
 
-    public void recv_insert() throws org.apache.thrift.TException
+    public void recv_write() throws org.apache.thrift.TException
     {
-      insert_result result = new insert_result();
-      receiveBase(result, "insert");
+      write_result result = new write_result();
+      receiveBase(result, "write");
       return;
     }
 
@@ -185,30 +183,24 @@ public class QueryService {
       }
     }
 
-    public void insert(String table, List<Column> columns, List<ColumnValueList> values, org.apache.thrift.async.AsyncMethodCallback<insert_call> resultHandler) throws org.apache.thrift.TException {
+    public void write(WriteOperation op, org.apache.thrift.async.AsyncMethodCallback<write_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      insert_call method_call = new insert_call(table, columns, values, resultHandler, this, ___protocolFactory, ___transport);
+      write_call method_call = new write_call(op, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class insert_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String table;
-      private List<Column> columns;
-      private List<ColumnValueList> values;
-      public insert_call(String table, List<Column> columns, List<ColumnValueList> values, org.apache.thrift.async.AsyncMethodCallback<insert_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class write_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private WriteOperation op;
+      public write_call(WriteOperation op, org.apache.thrift.async.AsyncMethodCallback<write_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.table = table;
-        this.columns = columns;
-        this.values = values;
+        this.op = op;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("insert", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        insert_args args = new insert_args();
-        args.setTable(table);
-        args.setColumns(columns);
-        args.setValues(values);
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("write", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        write_args args = new write_args();
+        args.setOp(op);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -219,7 +211,7 @@ public class QueryService {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        (new Client(prot)).recv_insert();
+        (new Client(prot)).recv_write();
       }
     }
 
@@ -269,7 +261,7 @@ public class QueryService {
 
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("execute", new execute());
-      processMap.put("insert", new insert());
+      processMap.put("write", new write());
       processMap.put("select", new select());
       return processMap;
     }
@@ -290,18 +282,18 @@ public class QueryService {
       }
     }
 
-    private static class insert<I extends Iface> extends org.apache.thrift.ProcessFunction<I, insert_args> {
-      public insert() {
-        super("insert");
+    private static class write<I extends Iface> extends org.apache.thrift.ProcessFunction<I, write_args> {
+      public write() {
+        super("write");
       }
 
-      protected insert_args getEmptyArgsInstance() {
-        return new insert_args();
+      protected write_args getEmptyArgsInstance() {
+        return new write_args();
       }
 
-      protected insert_result getResult(I iface, insert_args args) throws org.apache.thrift.TException {
-        insert_result result = new insert_result();
-        iface.insert(args.table, args.columns, args.values);
+      protected write_result getResult(I iface, write_args args) throws org.apache.thrift.TException {
+        write_result result = new write_result();
+        iface.write(args.op);
         return result;
       }
     }
@@ -926,28 +918,22 @@ public class QueryService {
 
   }
 
-  public static class insert_args implements org.apache.thrift.TBase<insert_args, insert_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("insert_args");
+  public static class write_args implements org.apache.thrift.TBase<write_args, write_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("write_args");
 
-    private static final org.apache.thrift.protocol.TField TABLE_FIELD_DESC = new org.apache.thrift.protocol.TField("table", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField COLUMNS_FIELD_DESC = new org.apache.thrift.protocol.TField("columns", org.apache.thrift.protocol.TType.LIST, (short)2);
-    private static final org.apache.thrift.protocol.TField VALUES_FIELD_DESC = new org.apache.thrift.protocol.TField("values", org.apache.thrift.protocol.TType.LIST, (short)3);
+    private static final org.apache.thrift.protocol.TField OP_FIELD_DESC = new org.apache.thrift.protocol.TField("op", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new insert_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new insert_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new write_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new write_argsTupleSchemeFactory());
     }
 
-    private String table; // required
-    private List<Column> columns; // required
-    private List<ColumnValueList> values; // required
+    private WriteOperation op; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      TABLE((short)1, "table"),
-      COLUMNS((short)2, "columns"),
-      VALUES((short)3, "values");
+      OP((short)1, "op");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -962,12 +948,8 @@ public class QueryService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // TABLE
-            return TABLE;
-          case 2: // COLUMNS
-            return COLUMNS;
-          case 3: // VALUES
-            return VALUES;
+          case 1: // OP
+            return OP;
           default:
             return null;
         }
@@ -1011,188 +993,70 @@ public class QueryService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.TABLE, new org.apache.thrift.meta_data.FieldMetaData("table", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.COLUMNS, new org.apache.thrift.meta_data.FieldMetaData("columns", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Column.class))));
-      tmpMap.put(_Fields.VALUES, new org.apache.thrift.meta_data.FieldMetaData("values", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ColumnValueList.class))));
+      tmpMap.put(_Fields.OP, new org.apache.thrift.meta_data.FieldMetaData("op", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, WriteOperation.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(insert_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(write_args.class, metaDataMap);
     }
 
-    public insert_args() {
+    public write_args() {
     }
 
-    public insert_args(
-      String table,
-      List<Column> columns,
-      List<ColumnValueList> values)
+    public write_args(
+      WriteOperation op)
     {
       this();
-      this.table = table;
-      this.columns = columns;
-      this.values = values;
+      this.op = op;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public insert_args(insert_args other) {
-      if (other.isSetTable()) {
-        this.table = other.table;
-      }
-      if (other.isSetColumns()) {
-        List<Column> __this__columns = new ArrayList<Column>();
-        for (Column other_element : other.columns) {
-          __this__columns.add(new Column(other_element));
-        }
-        this.columns = __this__columns;
-      }
-      if (other.isSetValues()) {
-        List<ColumnValueList> __this__values = new ArrayList<ColumnValueList>();
-        for (ColumnValueList other_element : other.values) {
-          __this__values.add(new ColumnValueList(other_element));
-        }
-        this.values = __this__values;
+    public write_args(write_args other) {
+      if (other.isSetOp()) {
+        this.op = new WriteOperation(other.op);
       }
     }
 
-    public insert_args deepCopy() {
-      return new insert_args(this);
+    public write_args deepCopy() {
+      return new write_args(this);
     }
 
     @Override
     public void clear() {
-      this.table = null;
-      this.columns = null;
-      this.values = null;
+      this.op = null;
     }
 
-    public String getTable() {
-      return this.table;
+    public WriteOperation getOp() {
+      return this.op;
     }
 
-    public void setTable(String table) {
-      this.table = table;
+    public void setOp(WriteOperation op) {
+      this.op = op;
     }
 
-    public void unsetTable() {
-      this.table = null;
+    public void unsetOp() {
+      this.op = null;
     }
 
-    /** Returns true if field table is set (has been assigned a value) and false otherwise */
-    public boolean isSetTable() {
-      return this.table != null;
+    /** Returns true if field op is set (has been assigned a value) and false otherwise */
+    public boolean isSetOp() {
+      return this.op != null;
     }
 
-    public void setTableIsSet(boolean value) {
+    public void setOpIsSet(boolean value) {
       if (!value) {
-        this.table = null;
-      }
-    }
-
-    public int getColumnsSize() {
-      return (this.columns == null) ? 0 : this.columns.size();
-    }
-
-    public java.util.Iterator<Column> getColumnsIterator() {
-      return (this.columns == null) ? null : this.columns.iterator();
-    }
-
-    public void addToColumns(Column elem) {
-      if (this.columns == null) {
-        this.columns = new ArrayList<Column>();
-      }
-      this.columns.add(elem);
-    }
-
-    public List<Column> getColumns() {
-      return this.columns;
-    }
-
-    public void setColumns(List<Column> columns) {
-      this.columns = columns;
-    }
-
-    public void unsetColumns() {
-      this.columns = null;
-    }
-
-    /** Returns true if field columns is set (has been assigned a value) and false otherwise */
-    public boolean isSetColumns() {
-      return this.columns != null;
-    }
-
-    public void setColumnsIsSet(boolean value) {
-      if (!value) {
-        this.columns = null;
-      }
-    }
-
-    public int getValuesSize() {
-      return (this.values == null) ? 0 : this.values.size();
-    }
-
-    public java.util.Iterator<ColumnValueList> getValuesIterator() {
-      return (this.values == null) ? null : this.values.iterator();
-    }
-
-    public void addToValues(ColumnValueList elem) {
-      if (this.values == null) {
-        this.values = new ArrayList<ColumnValueList>();
-      }
-      this.values.add(elem);
-    }
-
-    public List<ColumnValueList> getValues() {
-      return this.values;
-    }
-
-    public void setValues(List<ColumnValueList> values) {
-      this.values = values;
-    }
-
-    public void unsetValues() {
-      this.values = null;
-    }
-
-    /** Returns true if field values is set (has been assigned a value) and false otherwise */
-    public boolean isSetValues() {
-      return this.values != null;
-    }
-
-    public void setValuesIsSet(boolean value) {
-      if (!value) {
-        this.values = null;
+        this.op = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case TABLE:
+      case OP:
         if (value == null) {
-          unsetTable();
+          unsetOp();
         } else {
-          setTable((String)value);
-        }
-        break;
-
-      case COLUMNS:
-        if (value == null) {
-          unsetColumns();
-        } else {
-          setColumns((List<Column>)value);
-        }
-        break;
-
-      case VALUES:
-        if (value == null) {
-          unsetValues();
-        } else {
-          setValues((List<ColumnValueList>)value);
+          setOp((WriteOperation)value);
         }
         break;
 
@@ -1201,14 +1065,8 @@ public class QueryService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case TABLE:
-        return getTable();
-
-      case COLUMNS:
-        return getColumns();
-
-      case VALUES:
-        return getValues();
+      case OP:
+        return getOp();
 
       }
       throw new IllegalStateException();
@@ -1221,12 +1079,8 @@ public class QueryService {
       }
 
       switch (field) {
-      case TABLE:
-        return isSetTable();
-      case COLUMNS:
-        return isSetColumns();
-      case VALUES:
-        return isSetValues();
+      case OP:
+        return isSetOp();
       }
       throw new IllegalStateException();
     }
@@ -1235,39 +1089,21 @@ public class QueryService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof insert_args)
-        return this.equals((insert_args)that);
+      if (that instanceof write_args)
+        return this.equals((write_args)that);
       return false;
     }
 
-    public boolean equals(insert_args that) {
+    public boolean equals(write_args that) {
       if (that == null)
         return false;
 
-      boolean this_present_table = true && this.isSetTable();
-      boolean that_present_table = true && that.isSetTable();
-      if (this_present_table || that_present_table) {
-        if (!(this_present_table && that_present_table))
+      boolean this_present_op = true && this.isSetOp();
+      boolean that_present_op = true && that.isSetOp();
+      if (this_present_op || that_present_op) {
+        if (!(this_present_op && that_present_op))
           return false;
-        if (!this.table.equals(that.table))
-          return false;
-      }
-
-      boolean this_present_columns = true && this.isSetColumns();
-      boolean that_present_columns = true && that.isSetColumns();
-      if (this_present_columns || that_present_columns) {
-        if (!(this_present_columns && that_present_columns))
-          return false;
-        if (!this.columns.equals(that.columns))
-          return false;
-      }
-
-      boolean this_present_values = true && this.isSetValues();
-      boolean that_present_values = true && that.isSetValues();
-      if (this_present_values || that_present_values) {
-        if (!(this_present_values && that_present_values))
-          return false;
-        if (!this.values.equals(that.values))
+        if (!this.op.equals(that.op))
           return false;
       }
 
@@ -1278,58 +1114,28 @@ public class QueryService {
     public int hashCode() {
       HashCodeBuilder builder = new HashCodeBuilder();
 
-      boolean present_table = true && (isSetTable());
-      builder.append(present_table);
-      if (present_table)
-        builder.append(table);
-
-      boolean present_columns = true && (isSetColumns());
-      builder.append(present_columns);
-      if (present_columns)
-        builder.append(columns);
-
-      boolean present_values = true && (isSetValues());
-      builder.append(present_values);
-      if (present_values)
-        builder.append(values);
+      boolean present_op = true && (isSetOp());
+      builder.append(present_op);
+      if (present_op)
+        builder.append(op);
 
       return builder.toHashCode();
     }
 
-    public int compareTo(insert_args other) {
+    public int compareTo(write_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      insert_args typedOther = (insert_args)other;
+      write_args typedOther = (write_args)other;
 
-      lastComparison = Boolean.valueOf(isSetTable()).compareTo(typedOther.isSetTable());
+      lastComparison = Boolean.valueOf(isSetOp()).compareTo(typedOther.isSetOp());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetTable()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.table, typedOther.table);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetColumns()).compareTo(typedOther.isSetColumns());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetColumns()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.columns, typedOther.columns);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetValues()).compareTo(typedOther.isSetValues());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetValues()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.values, typedOther.values);
+      if (isSetOp()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.op, typedOther.op);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1351,30 +1157,14 @@ public class QueryService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("insert_args(");
+      StringBuilder sb = new StringBuilder("write_args(");
       boolean first = true;
 
-      sb.append("table:");
-      if (this.table == null) {
+      sb.append("op:");
+      if (this.op == null) {
         sb.append("null");
       } else {
-        sb.append(this.table);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("columns:");
-      if (this.columns == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.columns);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("values:");
-      if (this.values == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.values);
+        sb.append(this.op);
       }
       first = false;
       sb.append(")");
@@ -1401,15 +1191,15 @@ public class QueryService {
       }
     }
 
-    private static class insert_argsStandardSchemeFactory implements SchemeFactory {
-      public insert_argsStandardScheme getScheme() {
-        return new insert_argsStandardScheme();
+    private static class write_argsStandardSchemeFactory implements SchemeFactory {
+      public write_argsStandardScheme getScheme() {
+        return new write_argsStandardScheme();
       }
     }
 
-    private static class insert_argsStandardScheme extends StandardScheme<insert_args> {
+    private static class write_argsStandardScheme extends StandardScheme<write_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, insert_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, write_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1419,48 +1209,11 @@ public class QueryService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // TABLE
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.table = iprot.readString();
-                struct.setTableIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // COLUMNS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list56 = iprot.readListBegin();
-                  struct.columns = new ArrayList<Column>(_list56.size);
-                  for (int _i57 = 0; _i57 < _list56.size; ++_i57)
-                  {
-                    Column _elem58; // required
-                    _elem58 = new Column();
-                    _elem58.read(iprot);
-                    struct.columns.add(_elem58);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setColumnsIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // VALUES
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list59 = iprot.readListBegin();
-                  struct.values = new ArrayList<ColumnValueList>(_list59.size);
-                  for (int _i60 = 0; _i60 < _list59.size; ++_i60)
-                  {
-                    ColumnValueList _elem61; // required
-                    _elem61 = new ColumnValueList();
-                    _elem61.read(iprot);
-                    struct.values.add(_elem61);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setValuesIsSet(true);
+            case 1: // OP
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.op = new WriteOperation();
+                struct.op.read(iprot);
+                struct.setOpIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -1474,37 +1227,13 @@ public class QueryService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, insert_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, write_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.table != null) {
-          oprot.writeFieldBegin(TABLE_FIELD_DESC);
-          oprot.writeString(struct.table);
-          oprot.writeFieldEnd();
-        }
-        if (struct.columns != null) {
-          oprot.writeFieldBegin(COLUMNS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.columns.size()));
-            for (Column _iter62 : struct.columns)
-            {
-              _iter62.write(oprot);
-            }
-            oprot.writeListEnd();
-          }
-          oprot.writeFieldEnd();
-        }
-        if (struct.values != null) {
-          oprot.writeFieldBegin(VALUES_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.values.size()));
-            for (ColumnValueList _iter63 : struct.values)
-            {
-              _iter63.write(oprot);
-            }
-            oprot.writeListEnd();
-          }
+        if (struct.op != null) {
+          oprot.writeFieldBegin(OP_FIELD_DESC);
+          struct.op.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -1513,100 +1242,49 @@ public class QueryService {
 
     }
 
-    private static class insert_argsTupleSchemeFactory implements SchemeFactory {
-      public insert_argsTupleScheme getScheme() {
-        return new insert_argsTupleScheme();
+    private static class write_argsTupleSchemeFactory implements SchemeFactory {
+      public write_argsTupleScheme getScheme() {
+        return new write_argsTupleScheme();
       }
     }
 
-    private static class insert_argsTupleScheme extends TupleScheme<insert_args> {
+    private static class write_argsTupleScheme extends TupleScheme<write_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, insert_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, write_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetTable()) {
+        if (struct.isSetOp()) {
           optionals.set(0);
         }
-        if (struct.isSetColumns()) {
-          optionals.set(1);
-        }
-        if (struct.isSetValues()) {
-          optionals.set(2);
-        }
-        oprot.writeBitSet(optionals, 3);
-        if (struct.isSetTable()) {
-          oprot.writeString(struct.table);
-        }
-        if (struct.isSetColumns()) {
-          {
-            oprot.writeI32(struct.columns.size());
-            for (Column _iter64 : struct.columns)
-            {
-              _iter64.write(oprot);
-            }
-          }
-        }
-        if (struct.isSetValues()) {
-          {
-            oprot.writeI32(struct.values.size());
-            for (ColumnValueList _iter65 : struct.values)
-            {
-              _iter65.write(oprot);
-            }
-          }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetOp()) {
+          struct.op.write(oprot);
         }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, insert_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, write_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(3);
+        BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.table = iprot.readString();
-          struct.setTableIsSet(true);
-        }
-        if (incoming.get(1)) {
-          {
-            org.apache.thrift.protocol.TList _list66 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.columns = new ArrayList<Column>(_list66.size);
-            for (int _i67 = 0; _i67 < _list66.size; ++_i67)
-            {
-              Column _elem68; // required
-              _elem68 = new Column();
-              _elem68.read(iprot);
-              struct.columns.add(_elem68);
-            }
-          }
-          struct.setColumnsIsSet(true);
-        }
-        if (incoming.get(2)) {
-          {
-            org.apache.thrift.protocol.TList _list69 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.values = new ArrayList<ColumnValueList>(_list69.size);
-            for (int _i70 = 0; _i70 < _list69.size; ++_i70)
-            {
-              ColumnValueList _elem71; // required
-              _elem71 = new ColumnValueList();
-              _elem71.read(iprot);
-              struct.values.add(_elem71);
-            }
-          }
-          struct.setValuesIsSet(true);
+          struct.op = new WriteOperation();
+          struct.op.read(iprot);
+          struct.setOpIsSet(true);
         }
       }
     }
 
   }
 
-  public static class insert_result implements org.apache.thrift.TBase<insert_result, insert_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("insert_result");
+  public static class write_result implements org.apache.thrift.TBase<write_result, write_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("write_result");
 
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new insert_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new insert_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new write_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new write_resultTupleSchemeFactory());
     }
 
 
@@ -1669,20 +1347,20 @@ public class QueryService {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(insert_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(write_result.class, metaDataMap);
     }
 
-    public insert_result() {
+    public write_result() {
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public insert_result(insert_result other) {
+    public write_result(write_result other) {
     }
 
-    public insert_result deepCopy() {
-      return new insert_result(this);
+    public write_result deepCopy() {
+      return new write_result(this);
     }
 
     @Override
@@ -1715,12 +1393,12 @@ public class QueryService {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof insert_result)
-        return this.equals((insert_result)that);
+      if (that instanceof write_result)
+        return this.equals((write_result)that);
       return false;
     }
 
-    public boolean equals(insert_result that) {
+    public boolean equals(write_result that) {
       if (that == null)
         return false;
 
@@ -1734,13 +1412,13 @@ public class QueryService {
       return builder.toHashCode();
     }
 
-    public int compareTo(insert_result other) {
+    public int compareTo(write_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      insert_result typedOther = (insert_result)other;
+      write_result typedOther = (write_result)other;
 
       return 0;
     }
@@ -1759,7 +1437,7 @@ public class QueryService {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("insert_result(");
+      StringBuilder sb = new StringBuilder("write_result(");
       boolean first = true;
 
       sb.append(")");
@@ -1786,15 +1464,15 @@ public class QueryService {
       }
     }
 
-    private static class insert_resultStandardSchemeFactory implements SchemeFactory {
-      public insert_resultStandardScheme getScheme() {
-        return new insert_resultStandardScheme();
+    private static class write_resultStandardSchemeFactory implements SchemeFactory {
+      public write_resultStandardScheme getScheme() {
+        return new write_resultStandardScheme();
       }
     }
 
-    private static class insert_resultStandardScheme extends StandardScheme<insert_result> {
+    private static class write_resultStandardScheme extends StandardScheme<write_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, insert_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, write_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1813,7 +1491,7 @@ public class QueryService {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, insert_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, write_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1823,21 +1501,21 @@ public class QueryService {
 
     }
 
-    private static class insert_resultTupleSchemeFactory implements SchemeFactory {
-      public insert_resultTupleScheme getScheme() {
-        return new insert_resultTupleScheme();
+    private static class write_resultTupleSchemeFactory implements SchemeFactory {
+      public write_resultTupleScheme getScheme() {
+        return new write_resultTupleScheme();
       }
     }
 
-    private static class insert_resultTupleScheme extends TupleScheme<insert_result> {
+    private static class write_resultTupleScheme extends TupleScheme<write_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, insert_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, write_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, insert_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, write_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }

@@ -24,7 +24,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print ''
   print 'Functions:'
   print '  void execute(string sql)'
-  print '  void insert(string table,  columns,  values)'
+  print '  void write(WriteOperation op)'
   print '  QueryResult select(Query query)'
   print ''
   sys.exit(0)
@@ -83,11 +83,11 @@ if cmd == 'execute':
     sys.exit(1)
   pp.pprint(client.execute(args[0],))
 
-elif cmd == 'insert':
-  if len(args) != 3:
-    print 'insert requires 3 args'
+elif cmd == 'write':
+  if len(args) != 1:
+    print 'write requires 1 args'
     sys.exit(1)
-  pp.pprint(client.insert(args[0],eval(args[1]),eval(args[2]),))
+  pp.pprint(client.write(eval(args[0]),))
 
 elif cmd == 'select':
   if len(args) != 1:

@@ -25,12 +25,10 @@ class Iface(object):
     """
     pass
 
-  def insert(self, table, columns, values):
+  def write(self, op):
     """
     Parameters:
-     - table
-     - columns
-     - values
+     - op
     """
     pass
 
@@ -77,34 +75,30 @@ class Client(Iface):
     self._iprot.readMessageEnd()
     return
 
-  def insert(self, table, columns, values):
+  def write(self, op):
     """
     Parameters:
-     - table
-     - columns
-     - values
+     - op
     """
-    self.send_insert(table, columns, values)
-    self.recv_insert()
+    self.send_write(op)
+    self.recv_write()
 
-  def send_insert(self, table, columns, values):
-    self._oprot.writeMessageBegin('insert', TMessageType.CALL, self._seqid)
-    args = insert_args()
-    args.table = table
-    args.columns = columns
-    args.values = values
+  def send_write(self, op):
+    self._oprot.writeMessageBegin('write', TMessageType.CALL, self._seqid)
+    args = write_args()
+    args.op = op
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_insert(self, ):
+  def recv_write(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = insert_result()
+    result = write_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -145,7 +139,7 @@ class Processor(Iface, TProcessor):
     self._handler = handler
     self._processMap = {}
     self._processMap["execute"] = Processor.process_execute
-    self._processMap["insert"] = Processor.process_insert
+    self._processMap["write"] = Processor.process_write
     self._processMap["select"] = Processor.process_select
 
   def process(self, iprot, oprot):
@@ -174,13 +168,13 @@ class Processor(Iface, TProcessor):
     oprot.writeMessageEnd()
     oprot.trans.flush()
 
-  def process_insert(self, seqid, iprot, oprot):
-    args = insert_args()
+  def process_write(self, seqid, iprot, oprot):
+    args = write_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = insert_result()
-    self._handler.insert(args.table, args.columns, args.values)
-    oprot.writeMessageBegin("insert", TMessageType.REPLY, seqid)
+    result = write_result()
+    self._handler.write(args.op)
+    oprot.writeMessageBegin("write", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -301,25 +295,19 @@ class execute_result(object):
   def __ne__(self, other):
     return not (self == other)
 
-class insert_args(object):
+class write_args(object):
   """
   Attributes:
-   - table
-   - columns
-   - values
+   - op
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'table', None, None, ), # 1
-    (2, TType.LIST, 'columns', (TType.STRUCT,(Column, Column.thrift_spec)), None, ), # 2
-    (3, TType.LIST, 'values', (TType.STRUCT,(ColumnValueList, ColumnValueList.thrift_spec)), None, ), # 3
+    (1, TType.STRUCT, 'op', (WriteOperation, WriteOperation.thrift_spec), None, ), # 1
   )
 
-  def __init__(self, table=None, columns=None, values=None,):
-    self.table = table
-    self.columns = columns
-    self.values = values
+  def __init__(self, op=None,):
+    self.op = op
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -331,30 +319,9 @@ class insert_args(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
-        if ftype == TType.STRING:
-          self.table = iprot.readString();
-        else:
-          iprot.skip(ftype)
-      elif fid == 2:
-        if ftype == TType.LIST:
-          self.columns = []
-          (_etype52, _size49) = iprot.readListBegin()
-          for _i53 in xrange(_size49):
-            _elem54 = Column()
-            _elem54.read(iprot)
-            self.columns.append(_elem54)
-          iprot.readListEnd()
-        else:
-          iprot.skip(ftype)
-      elif fid == 3:
-        if ftype == TType.LIST:
-          self.values = []
-          (_etype58, _size55) = iprot.readListBegin()
-          for _i59 in xrange(_size55):
-            _elem60 = ColumnValueList()
-            _elem60.read(iprot)
-            self.values.append(_elem60)
-          iprot.readListEnd()
+        if ftype == TType.STRUCT:
+          self.op = WriteOperation()
+          self.op.read(iprot)
         else:
           iprot.skip(ftype)
       else:
@@ -366,24 +333,10 @@ class insert_args(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('insert_args')
-    if self.table is not None:
-      oprot.writeFieldBegin('table', TType.STRING, 1)
-      oprot.writeString(self.table)
-      oprot.writeFieldEnd()
-    if self.columns is not None:
-      oprot.writeFieldBegin('columns', TType.LIST, 2)
-      oprot.writeListBegin(TType.STRUCT, len(self.columns))
-      for iter61 in self.columns:
-        iter61.write(oprot)
-      oprot.writeListEnd()
-      oprot.writeFieldEnd()
-    if self.values is not None:
-      oprot.writeFieldBegin('values', TType.LIST, 3)
-      oprot.writeListBegin(TType.STRUCT, len(self.values))
-      for iter62 in self.values:
-        iter62.write(oprot)
-      oprot.writeListEnd()
+    oprot.writeStructBegin('write_args')
+    if self.op is not None:
+      oprot.writeFieldBegin('op', TType.STRUCT, 1)
+      self.op.write(oprot)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -403,7 +356,7 @@ class insert_args(object):
   def __ne__(self, other):
     return not (self == other)
 
-class insert_result(object):
+class write_result(object):
 
   thrift_spec = (
   )
@@ -426,7 +379,7 @@ class insert_result(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('insert_result')
+    oprot.writeStructBegin('write_result')
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 

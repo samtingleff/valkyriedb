@@ -342,14 +342,14 @@ public class ColumnValueList implements org.apache.thrift.TBase<ColumnValueList,
           case 1: // VALUES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                struct.values = new ArrayList<ColumnValue>(_list8.size);
-                for (int _i9 = 0; _i9 < _list8.size; ++_i9)
+                org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
+                struct.values = new ArrayList<ColumnValue>(_list0.size);
+                for (int _i1 = 0; _i1 < _list0.size; ++_i1)
                 {
-                  ColumnValue _elem10; // required
-                  _elem10 = new ColumnValue();
-                  _elem10.read(iprot);
-                  struct.values.add(_elem10);
+                  ColumnValue _elem2; // required
+                  _elem2 = new ColumnValue();
+                  _elem2.read(iprot);
+                  struct.values.add(_elem2);
                 }
                 iprot.readListEnd();
               }
@@ -375,9 +375,9 @@ public class ColumnValueList implements org.apache.thrift.TBase<ColumnValueList,
         oprot.writeFieldBegin(VALUES_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.values.size()));
-          for (ColumnValue _iter11 : struct.values)
+          for (ColumnValue _iter3 : struct.values)
           {
-            _iter11.write(oprot);
+            _iter3.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -408,9 +408,9 @@ public class ColumnValueList implements org.apache.thrift.TBase<ColumnValueList,
       if (struct.isSetValues()) {
         {
           oprot.writeI32(struct.values.size());
-          for (ColumnValue _iter12 : struct.values)
+          for (ColumnValue _iter4 : struct.values)
           {
-            _iter12.write(oprot);
+            _iter4.write(oprot);
           }
         }
       }
@@ -422,14 +422,14 @@ public class ColumnValueList implements org.apache.thrift.TBase<ColumnValueList,
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.values = new ArrayList<ColumnValue>(_list13.size);
-          for (int _i14 = 0; _i14 < _list13.size; ++_i14)
+          org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.values = new ArrayList<ColumnValue>(_list5.size);
+          for (int _i6 = 0; _i6 < _list5.size; ++_i6)
           {
-            ColumnValue _elem15; // required
-            _elem15 = new ColumnValue();
-            _elem15.read(iprot);
-            struct.values.add(_elem15);
+            ColumnValue _elem7; // required
+            _elem7 = new ColumnValue();
+            _elem7.read(iprot);
+            struct.values.add(_elem7);
           }
         }
         struct.setValuesIsSet(true);

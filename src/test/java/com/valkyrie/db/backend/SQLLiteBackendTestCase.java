@@ -11,10 +11,12 @@ import com.valkyrie.db.gen.ColumnSpec;
 import com.valkyrie.db.gen.ColumnType;
 import com.valkyrie.db.gen.ColumnValue;
 import com.valkyrie.db.gen.ColumnValueList;
+import com.valkyrie.db.gen.Operation;
 import com.valkyrie.db.gen.Query;
 import com.valkyrie.db.gen.QueryResult;
 import com.valkyrie.db.gen.Row;
 import com.valkyrie.db.gen.Value;
+import com.valkyrie.db.gen.WriteOperation;
 
 import junit.framework.TestCase;
 
@@ -32,17 +34,19 @@ public class SQLLiteBackendTestCase extends TestCase {
 	}
 
 	public void testSimple() throws Exception {
-		//TableSpec ts = createTableSpec();
 		String table = "foo";
 		backend.execute("create table foo ( a_int INT,b_long BIGINT,c_double FLOAT,d_string VARCHAR,e_bytes BLOB )");
 		ColumnValue cv = new ColumnValue();
 		cv.setV_int(12);
-		backend.insert(table,
+		WriteOperation write = new WriteOperation(
+				table,
+				Operation.Insert,
 				Collections.singletonList(new Column(
 						new ColumnSpec("a_int", ColumnType.IntegerType),
 						cv)),
 				Arrays.asList(
 						new ColumnValueList(Collections.singletonList(cv))));
+		backend.write(write);
 		QueryResult qr = backend.select(
 				new Query(
 						table,

@@ -21,6 +21,7 @@ import com.valkyrie.db.gen.Query;
 import com.valkyrie.db.gen.QueryResult;
 import com.valkyrie.db.gen.Row;
 import com.valkyrie.db.gen.Value;
+import com.valkyrie.db.gen.WriteOperation;
 
 public class SQLLiteBackend implements StorageBackend {
 
@@ -54,7 +55,6 @@ public class SQLLiteBackend implements StorageBackend {
 		db.dispose();
 	}
 
-
 	@Override
 	public void execute(String sql) throws TException {
 		try {
@@ -65,31 +65,35 @@ public class SQLLiteBackend implements StorageBackend {
 	}
 
 	@Override
-	public void insert(String table, List<Column> columns,
-			List<ColumnValueList> values) throws TException {
+	public void write(WriteOperation op) throws TException {
 		try {
-		SQLiteStatement stmt = prepareInsert(table, columns, values);
-		try {
-		for (ColumnValueList row : values) {
-			List<ColumnValue> cvs = row.getValues();
-			int index = 0;
-			for (ColumnValue cv : cvs) {
-				ColumnSpec cs = columns.get(index).getSpec();
+			// TODO: handle updates
+			SQLiteStatement stmt = prepareInsert(op.getTable(),
+					op.getColumns(), op.getValues());
+			try {
+				List<Column> columns = op.getColumns();
+				for (ColumnValueList row : op.getValues()) {
+					List<ColumnValue> cvs = row.getValues();
+					int index = 0;
+					for (ColumnValue cv : cvs) {
+						ColumnSpec cs = columns.get(index).getSpec();
 
-				String column = columns.get(index).getSpec().getColumn();
-				//ColumnType ct = tables.getColumnType(table, column);
-				bind(stmt, index + 1, cs.getType(), cv);
-				++index;
+						String column = columns.get(index).getSpec()
+								.getColumn();
+						// ColumnType ct = tables.getColumnType(table, column);
+						bind(stmt, index + 1, cs.getType(), cv);
+						++index;
+					}
+					stmt.step();
+					stmt.clearBindings();
+				}
+			} finally {
+				stmt.dispose();
 			}
-			stmt.step();
-			stmt.clearBindings();
-		}
-		} finally {
-		stmt.dispose();
-		}
 		} catch (SQLiteException e) {
 			throw new TException(e);
-		} finally { }
+		} finally {
+		}
 	}
 
 	@Override
@@ -118,7 +122,8 @@ public class SQLLiteBackend implements StorageBackend {
 		}
 	}
 
-	private void setColumnValue(SQLiteStatement stmt, ColumnType ct, int index, ColumnValue v) throws SQLiteException {
+	private void setColumnValue(SQLiteStatement stmt, ColumnType ct, int index,
+			ColumnValue v) throws SQLiteException {
 		switch (ct) {
 		case IntegerType:
 			v.setV_int(stmt.columnInt(index));
@@ -140,25 +145,26 @@ public class SQLLiteBackend implements StorageBackend {
 		}
 	}
 
-	private void bind(SQLiteStatement stmt, int index, ColumnType ct, ColumnValue cv) throws SQLiteException {
+	private void bind(SQLiteStatement stmt, int index, ColumnType ct,
+			ColumnValue cv) throws SQLiteException {
 		switch (ct) {
-			case IntegerType:
-				stmt.bind(index, cv.getV_int());
-				break;
-			case LongType:
-				stmt.bind(index, cv.getV_long());
-				break;
-			case DoubleType:
-				stmt.bind(index, cv.getV_double());
-				break;
-			case StringType:
-				stmt.bind(index, cv.getV_string());
-				break;
-			case BytesType:
-				stmt.bind(index, cv.getV_bytes());
-				break;
-			default:
-				break;
+		case IntegerType:
+			stmt.bind(index, cv.getV_int());
+			break;
+		case LongType:
+			stmt.bind(index, cv.getV_long());
+			break;
+		case DoubleType:
+			stmt.bind(index, cv.getV_double());
+			break;
+		case StringType:
+			stmt.bind(index, cv.getV_string());
+			break;
+		case BytesType:
+			stmt.bind(index, cv.getV_bytes());
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -174,14 +180,10 @@ public class SQLLiteBackend implements StorageBackend {
 		}
 		sb.append(" from ");
 		sb.append(query.getTable());
-		/*sb.append(" (");
-		sb.append(") values (");
-		for (int i = 0 ; i < index; ++i) {
-			if (i != 0)
-				sb.append(',');
-			sb.append('?');
-		}
-		sb.append(")");*/
+		/*
+		 * sb.append(" ("); sb.append(") values ("); for (int i = 0 ; i < index;
+		 * ++i) { if (i != 0) sb.append(','); sb.append('?'); } sb.append(")");
+		 */
 		String sql = sb.toString();
 		System.out.println(sql);
 		SQLiteStatement ps = db.prepare(sql, false);
@@ -202,7 +204,7 @@ public class SQLLiteBackend implements StorageBackend {
 			++index;
 		}
 		sb.append(") values (");
-		for (int i = 0 ; i < index; ++i) {
+		for (int i = 0; i < index; ++i) {
 			if (i != 0)
 				sb.append(',');
 			sb.append('?');

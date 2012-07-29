@@ -346,14 +346,14 @@ public class Row implements org.apache.thrift.TBase<Row, Row._Fields>, java.io.S
           case 1: // VALUES
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list40 = iprot.readListBegin();
-                struct.values = new ArrayList<Value>(_list40.size);
-                for (int _i41 = 0; _i41 < _list40.size; ++_i41)
+                org.apache.thrift.protocol.TList _list32 = iprot.readListBegin();
+                struct.values = new ArrayList<Value>(_list32.size);
+                for (int _i33 = 0; _i33 < _list32.size; ++_i33)
                 {
-                  Value _elem42; // required
-                  _elem42 = new Value();
-                  _elem42.read(iprot);
-                  struct.values.add(_elem42);
+                  Value _elem34; // required
+                  _elem34 = new Value();
+                  _elem34.read(iprot);
+                  struct.values.add(_elem34);
                 }
                 iprot.readListEnd();
               }
@@ -379,9 +379,9 @@ public class Row implements org.apache.thrift.TBase<Row, Row._Fields>, java.io.S
         oprot.writeFieldBegin(VALUES_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.values.size()));
-          for (Value _iter43 : struct.values)
+          for (Value _iter35 : struct.values)
           {
-            _iter43.write(oprot);
+            _iter35.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -406,9 +406,9 @@ public class Row implements org.apache.thrift.TBase<Row, Row._Fields>, java.io.S
       TTupleProtocol oprot = (TTupleProtocol) prot;
       {
         oprot.writeI32(struct.values.size());
-        for (Value _iter44 : struct.values)
+        for (Value _iter36 : struct.values)
         {
-          _iter44.write(oprot);
+          _iter36.write(oprot);
         }
       }
     }
@@ -417,14 +417,14 @@ public class Row implements org.apache.thrift.TBase<Row, Row._Fields>, java.io.S
     public void read(org.apache.thrift.protocol.TProtocol prot, Row struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       {
-        org.apache.thrift.protocol.TList _list45 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.values = new ArrayList<Value>(_list45.size);
-        for (int _i46 = 0; _i46 < _list45.size; ++_i46)
+        org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.values = new ArrayList<Value>(_list37.size);
+        for (int _i38 = 0; _i38 < _list37.size; ++_i38)
         {
-          Value _elem47; // required
-          _elem47 = new Value();
-          _elem47.read(iprot);
-          struct.values.add(_elem47);
+          Value _elem39; // required
+          _elem39 = new Value();
+          _elem39.read(iprot);
+          struct.values.add(_elem39);
         }
       }
       struct.setValuesIsSet(true);

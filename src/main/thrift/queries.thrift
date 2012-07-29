@@ -15,6 +15,11 @@ enum Operator {
  LessThanOrEquals = 5
 }
 
+enum Operation {
+ Insert = 1,
+ Update = 2
+}
+
 enum ColumnType {
  IntegerType = 1,
  LongType = 2,
@@ -80,9 +85,16 @@ struct QueryResult {
  1: required list<Row> rows
 }
 
+struct WriteOperation {
+ 1: required string table,
+ 2: required Operation op,
+ 3: required list<Column> columns,
+ 4: list<ColumnValueList> values
+}
+
 service QueryService {
  void execute(1: string sql);
- void insert(1: string table, 2: list<Column> columns, 3: list<ColumnValueList> values);
+ void write(1: WriteOperation op);
  QueryResult select(1: Query query);
 }
 

@@ -346,14 +346,14 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
           case 1: // ROWS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list48 = iprot.readListBegin();
-                struct.rows = new ArrayList<Row>(_list48.size);
-                for (int _i49 = 0; _i49 < _list48.size; ++_i49)
+                org.apache.thrift.protocol.TList _list40 = iprot.readListBegin();
+                struct.rows = new ArrayList<Row>(_list40.size);
+                for (int _i41 = 0; _i41 < _list40.size; ++_i41)
                 {
-                  Row _elem50; // required
-                  _elem50 = new Row();
-                  _elem50.read(iprot);
-                  struct.rows.add(_elem50);
+                  Row _elem42; // required
+                  _elem42 = new Row();
+                  _elem42.read(iprot);
+                  struct.rows.add(_elem42);
                 }
                 iprot.readListEnd();
               }
@@ -379,9 +379,9 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
         oprot.writeFieldBegin(ROWS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.rows.size()));
-          for (Row _iter51 : struct.rows)
+          for (Row _iter43 : struct.rows)
           {
-            _iter51.write(oprot);
+            _iter43.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -406,9 +406,9 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
       TTupleProtocol oprot = (TTupleProtocol) prot;
       {
         oprot.writeI32(struct.rows.size());
-        for (Row _iter52 : struct.rows)
+        for (Row _iter44 : struct.rows)
         {
-          _iter52.write(oprot);
+          _iter44.write(oprot);
         }
       }
     }
@@ -417,14 +417,14 @@ public class QueryResult implements org.apache.thrift.TBase<QueryResult, QueryRe
     public void read(org.apache.thrift.protocol.TProtocol prot, QueryResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       {
-        org.apache.thrift.protocol.TList _list53 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-        struct.rows = new ArrayList<Row>(_list53.size);
-        for (int _i54 = 0; _i54 < _list53.size; ++_i54)
+        org.apache.thrift.protocol.TList _list45 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+        struct.rows = new ArrayList<Row>(_list45.size);
+        for (int _i46 = 0; _i46 < _list45.size; ++_i46)
         {
-          Row _elem55; // required
-          _elem55 = new Row();
-          _elem55.read(iprot);
-          struct.rows.add(_elem55);
+          Row _elem47; // required
+          _elem47 = new Row();
+          _elem47.read(iprot);
+          struct.rows.add(_elem47);
         }
       }
       struct.setRowsIsSet(true);
