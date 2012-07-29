@@ -20,10 +20,7 @@ import com.valkyrie.db.gen.ColumnValueList;
 import com.valkyrie.db.gen.Query;
 import com.valkyrie.db.gen.QueryResult;
 import com.valkyrie.db.gen.Row;
-import com.valkyrie.db.gen.TableSpec;
 import com.valkyrie.db.gen.Value;
-import com.valkyrie.db.meta.TableMetadataError;
-import com.valkyrie.db.meta.TableMetadataService;
 
 public class SQLLiteBackend implements StorageBackend {
 
@@ -37,12 +34,9 @@ public class SQLLiteBackend implements StorageBackend {
 		}
 	};
 
-	private TableMetadataService tables;
-
 	private SQLiteConnection db;
 
-	public SQLLiteBackend(TableMetadataService tables) {
-		this.tables = tables;
+	public SQLLiteBackend() {
 	}
 
 	@Override
@@ -95,8 +89,6 @@ public class SQLLiteBackend implements StorageBackend {
 		}
 		} catch (SQLiteException e) {
 			throw new TException(e);
-		} catch (TableMetadataError e) {
-			throw new TException(e);
 		} finally { }
 	}
 
@@ -122,8 +114,6 @@ public class SQLLiteBackend implements StorageBackend {
 			}
 			return new QueryResult(rows);
 		} catch (SQLiteException e) {
-			throw new TException(e);
-		} catch (TableMetadataError e) {
 			throw new TException(e);
 		}
 	}
@@ -172,25 +162,7 @@ public class SQLLiteBackend implements StorageBackend {
 		}
 	}
 
-	private String compileTableSpec(TableSpec table) {
-		StringBuffer sb = new StringBuffer();
-		sb.append("create table ");
-		sb.append(table.getName());
-		sb.append(" ( ");
-		int index = 0;
-		for (ColumnSpec column : table.getColumns()) {
-			if (index != 0)
-				sb.append(',');
-			sb.append(column.getColumn());
-			sb.append(' ');
-			sb.append(getSQLType(column.getType()));
-			++index;
-		}
-		sb.append(" )");
-		return sb.toString();
-	}
-
-	private SQLiteStatement prepareSelect(Query query) throws SQLiteException, TableMetadataError {
+	private SQLiteStatement prepareSelect(Query query) throws SQLiteException {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select ");
 		int index = 0;
@@ -217,7 +189,7 @@ public class SQLLiteBackend implements StorageBackend {
 	}
 
 	private SQLiteStatement prepareInsert(String table, List<Column> columns,
-			List<ColumnValueList> values) throws SQLiteException, TableMetadataError {
+			List<ColumnValueList> values) throws SQLiteException {
 		StringBuffer sb = new StringBuffer();
 		sb.append("insert into ");
 		sb.append(table);

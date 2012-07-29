@@ -14,9 +14,7 @@ import com.valkyrie.db.gen.ColumnValueList;
 import com.valkyrie.db.gen.Query;
 import com.valkyrie.db.gen.QueryResult;
 import com.valkyrie.db.gen.Row;
-import com.valkyrie.db.gen.TableSpec;
 import com.valkyrie.db.gen.Value;
-import com.valkyrie.db.meta.TableMetadataServiceFactory;
 
 import junit.framework.TestCase;
 
@@ -25,7 +23,7 @@ public class SQLLiteBackendTestCase extends TestCase {
 	private SQLLiteBackend backend;
 
 	public void setUp() throws Exception {
-		backend = new SQLLiteBackend(TableMetadataServiceFactory.create());
+		backend = new SQLLiteBackend();
 		backend.init();
 	}
 
@@ -77,17 +75,5 @@ public class SQLLiteBackendTestCase extends TestCase {
 
 	private void createTable() throws Exception {
 		backend.execute("create table foo ( a_int INT,b_long BIGINT,c_double FLOAT,d_string VARCHAR,e_bytes BLOB )");
-	}
-
-	private TableSpec createTableSpec() {
-		List<ColumnSpec> columns = Arrays.asList(
-				new ColumnSpec("a_int", ColumnType.IntegerType),
-				new ColumnSpec("b_long", ColumnType.LongType),
-				new ColumnSpec("c_double", ColumnType.DoubleType),
-				new ColumnSpec("d_string", ColumnType.StringType),
-				new ColumnSpec("e_bytes", ColumnType.BytesType)
-		);
-		TableSpec ts = new TableSpec("foo", columns);
-		return ts;
 	}
 }

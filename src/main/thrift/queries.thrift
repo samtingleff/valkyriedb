@@ -41,11 +41,6 @@ struct Column {
  2: ColumnValue value
 }
 
-struct TableSpec {
- 1: required string name,
- 2: required list<ColumnSpec> columns
-}
-
 struct ColumnValueList {
  1: list<ColumnValue> values
 }
