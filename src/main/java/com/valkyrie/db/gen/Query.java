@@ -31,9 +31,10 @@ import org.slf4j.LoggerFactory;
 public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Query");
 
-  private static final org.apache.thrift.protocol.TField COLUMNS_FIELD_DESC = new org.apache.thrift.protocol.TField("columns", org.apache.thrift.protocol.TType.LIST, (short)1);
-  private static final org.apache.thrift.protocol.TField CONDITIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("conditions", org.apache.thrift.protocol.TType.LIST, (short)2);
-  private static final org.apache.thrift.protocol.TField GROUPINGS_FIELD_DESC = new org.apache.thrift.protocol.TField("groupings", org.apache.thrift.protocol.TType.LIST, (short)3);
+  private static final org.apache.thrift.protocol.TField TABLE_FIELD_DESC = new org.apache.thrift.protocol.TField("table", org.apache.thrift.protocol.TType.STRING, (short)1);
+  private static final org.apache.thrift.protocol.TField COLUMNS_FIELD_DESC = new org.apache.thrift.protocol.TField("columns", org.apache.thrift.protocol.TType.LIST, (short)2);
+  private static final org.apache.thrift.protocol.TField CONDITIONS_FIELD_DESC = new org.apache.thrift.protocol.TField("conditions", org.apache.thrift.protocol.TType.LIST, (short)3);
+  private static final org.apache.thrift.protocol.TField GROUPINGS_FIELD_DESC = new org.apache.thrift.protocol.TField("groupings", org.apache.thrift.protocol.TType.LIST, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -41,15 +42,17 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
     schemes.put(TupleScheme.class, new QueryTupleSchemeFactory());
   }
 
+  private String table; // required
   private List<AggregateColumnSpec> columns; // required
   private List<Condition> conditions; // required
   private List<Grouping> groupings; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    COLUMNS((short)1, "columns"),
-    CONDITIONS((short)2, "conditions"),
-    GROUPINGS((short)3, "groupings");
+    TABLE((short)1, "table"),
+    COLUMNS((short)2, "columns"),
+    CONDITIONS((short)3, "conditions"),
+    GROUPINGS((short)4, "groupings");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -64,11 +67,13 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // COLUMNS
+        case 1: // TABLE
+          return TABLE;
+        case 2: // COLUMNS
           return COLUMNS;
-        case 2: // CONDITIONS
+        case 3: // CONDITIONS
           return CONDITIONS;
-        case 3: // GROUPINGS
+        case 4: // GROUPINGS
           return GROUPINGS;
         default:
           return null;
@@ -113,6 +118,8 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.TABLE, new org.apache.thrift.meta_data.FieldMetaData("table", org.apache.thrift.TFieldRequirementType.REQUIRED, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.COLUMNS, new org.apache.thrift.meta_data.FieldMetaData("columns", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, AggregateColumnSpec.class))));
@@ -130,11 +137,13 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
   }
 
   public Query(
+    String table,
     List<AggregateColumnSpec> columns,
     List<Condition> conditions,
     List<Grouping> groupings)
   {
     this();
+    this.table = table;
     this.columns = columns;
     this.conditions = conditions;
     this.groupings = groupings;
@@ -144,6 +153,9 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
    * Performs a deep copy on <i>other</i>.
    */
   public Query(Query other) {
+    if (other.isSetTable()) {
+      this.table = other.table;
+    }
     if (other.isSetColumns()) {
       List<AggregateColumnSpec> __this__columns = new ArrayList<AggregateColumnSpec>();
       for (AggregateColumnSpec other_element : other.columns) {
@@ -173,9 +185,33 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
 
   @Override
   public void clear() {
+    this.table = null;
     this.columns = null;
     this.conditions = null;
     this.groupings = null;
+  }
+
+  public String getTable() {
+    return this.table;
+  }
+
+  public void setTable(String table) {
+    this.table = table;
+  }
+
+  public void unsetTable() {
+    this.table = null;
+  }
+
+  /** Returns true if field table is set (has been assigned a value) and false otherwise */
+  public boolean isSetTable() {
+    return this.table != null;
+  }
+
+  public void setTableIsSet(boolean value) {
+    if (!value) {
+      this.table = null;
+    }
   }
 
   public int getColumnsSize() {
@@ -294,6 +330,14 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
+    case TABLE:
+      if (value == null) {
+        unsetTable();
+      } else {
+        setTable((String)value);
+      }
+      break;
+
     case COLUMNS:
       if (value == null) {
         unsetColumns();
@@ -323,6 +367,9 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
+    case TABLE:
+      return getTable();
+
     case COLUMNS:
       return getColumns();
 
@@ -343,6 +390,8 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
     }
 
     switch (field) {
+    case TABLE:
+      return isSetTable();
     case COLUMNS:
       return isSetColumns();
     case CONDITIONS:
@@ -365,6 +414,15 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
   public boolean equals(Query that) {
     if (that == null)
       return false;
+
+    boolean this_present_table = true && this.isSetTable();
+    boolean that_present_table = true && that.isSetTable();
+    if (this_present_table || that_present_table) {
+      if (!(this_present_table && that_present_table))
+        return false;
+      if (!this.table.equals(that.table))
+        return false;
+    }
 
     boolean this_present_columns = true && this.isSetColumns();
     boolean that_present_columns = true && that.isSetColumns();
@@ -400,6 +458,11 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
 
+    boolean present_table = true && (isSetTable());
+    builder.append(present_table);
+    if (present_table)
+      builder.append(table);
+
     boolean present_columns = true && (isSetColumns());
     builder.append(present_columns);
     if (present_columns)
@@ -426,6 +489,16 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
     int lastComparison = 0;
     Query typedOther = (Query)other;
 
+    lastComparison = Boolean.valueOf(isSetTable()).compareTo(typedOther.isSetTable());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetTable()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.table, typedOther.table);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetColumns()).compareTo(typedOther.isSetColumns());
     if (lastComparison != 0) {
       return lastComparison;
@@ -476,6 +549,14 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
     StringBuilder sb = new StringBuilder("Query(");
     boolean first = true;
 
+    sb.append("table:");
+    if (this.table == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.table);
+    }
+    first = false;
+    if (!first) sb.append(", ");
     sb.append("columns:");
     if (this.columns == null) {
       sb.append("null");
@@ -505,6 +586,10 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
+    if (!isSetTable()) {
+      throw new org.apache.thrift.protocol.TProtocolException("Required field 'table' is unset! Struct:" + toString());
+    }
+
     if (!isSetColumns()) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'columns' is unset! Struct:" + toString());
     }
@@ -553,7 +638,15 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
           break;
         }
         switch (schemeField.id) {
-          case 1: // COLUMNS
+          case 1: // TABLE
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.table = iprot.readString();
+              struct.setTableIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 2: // COLUMNS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
@@ -572,7 +665,7 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // CONDITIONS
+          case 3: // CONDITIONS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list19 = iprot.readListBegin();
@@ -591,7 +684,7 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // GROUPINGS
+          case 4: // GROUPINGS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list22 = iprot.readListBegin();
@@ -623,6 +716,11 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
+      if (struct.table != null) {
+        oprot.writeFieldBegin(TABLE_FIELD_DESC);
+        oprot.writeString(struct.table);
+        oprot.writeFieldEnd();
+      }
       if (struct.columns != null) {
         oprot.writeFieldBegin(COLUMNS_FIELD_DESC);
         {
@@ -676,6 +774,7 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
     @Override
     public void write(org.apache.thrift.protocol.TProtocol prot, Query struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
+      oprot.writeString(struct.table);
       {
         oprot.writeI32(struct.columns.size());
         for (AggregateColumnSpec _iter28 : struct.columns)
@@ -702,6 +801,8 @@ public class Query implements org.apache.thrift.TBase<Query, Query._Fields>, jav
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, Query struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
+      struct.table = iprot.readString();
+      struct.setTableIsSet(true);
       {
         org.apache.thrift.protocol.TList _list31 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
         struct.columns = new ArrayList<AggregateColumnSpec>(_list31.size);

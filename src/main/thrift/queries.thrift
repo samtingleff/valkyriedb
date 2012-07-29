@@ -66,9 +66,10 @@ struct Grouping {
 }
 
 struct Query {
- 1: required list<AggregateColumnSpec> columns,
- 2: required list<Condition> conditions,
- 3: required list<Grouping> groupings
+ 1: required string table,
+ 2: required list<AggregateColumnSpec> columns,
+ 3: required list<Condition> conditions,
+ 4: required list<Grouping> groupings
 }
 
 struct Row {

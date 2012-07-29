@@ -731,6 +731,7 @@ class Grouping(object):
 class Query(object):
   """
   Attributes:
+   - table
    - columns
    - conditions
    - groupings
@@ -738,12 +739,14 @@ class Query(object):
 
   thrift_spec = (
     None, # 0
-    (1, TType.LIST, 'columns', (TType.STRUCT,(AggregateColumnSpec, AggregateColumnSpec.thrift_spec)), None, ), # 1
-    (2, TType.LIST, 'conditions', (TType.STRUCT,(Condition, Condition.thrift_spec)), None, ), # 2
-    (3, TType.LIST, 'groupings', (TType.STRUCT,(Grouping, Grouping.thrift_spec)), None, ), # 3
+    (1, TType.STRING, 'table', None, None, ), # 1
+    (2, TType.LIST, 'columns', (TType.STRUCT,(AggregateColumnSpec, AggregateColumnSpec.thrift_spec)), None, ), # 2
+    (3, TType.LIST, 'conditions', (TType.STRUCT,(Condition, Condition.thrift_spec)), None, ), # 3
+    (4, TType.LIST, 'groupings', (TType.STRUCT,(Grouping, Grouping.thrift_spec)), None, ), # 4
   )
 
-  def __init__(self, columns=None, conditions=None, groupings=None,):
+  def __init__(self, table=None, columns=None, conditions=None, groupings=None,):
+    self.table = table
     self.columns = columns
     self.conditions = conditions
     self.groupings = groupings
@@ -758,6 +761,11 @@ class Query(object):
       if ftype == TType.STOP:
         break
       if fid == 1:
+        if ftype == TType.STRING:
+          self.table = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
         if ftype == TType.LIST:
           self.columns = []
           (_etype17, _size14) = iprot.readListBegin()
@@ -768,7 +776,7 @@ class Query(object):
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 2:
+      elif fid == 3:
         if ftype == TType.LIST:
           self.conditions = []
           (_etype23, _size20) = iprot.readListBegin()
@@ -779,7 +787,7 @@ class Query(object):
           iprot.readListEnd()
         else:
           iprot.skip(ftype)
-      elif fid == 3:
+      elif fid == 4:
         if ftype == TType.LIST:
           self.groupings = []
           (_etype29, _size26) = iprot.readListBegin()
@@ -800,22 +808,26 @@ class Query(object):
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('Query')
+    if self.table is not None:
+      oprot.writeFieldBegin('table', TType.STRING, 1)
+      oprot.writeString(self.table)
+      oprot.writeFieldEnd()
     if self.columns is not None:
-      oprot.writeFieldBegin('columns', TType.LIST, 1)
+      oprot.writeFieldBegin('columns', TType.LIST, 2)
       oprot.writeListBegin(TType.STRUCT, len(self.columns))
       for iter32 in self.columns:
         iter32.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.conditions is not None:
-      oprot.writeFieldBegin('conditions', TType.LIST, 2)
+      oprot.writeFieldBegin('conditions', TType.LIST, 3)
       oprot.writeListBegin(TType.STRUCT, len(self.conditions))
       for iter33 in self.conditions:
         iter33.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.groupings is not None:
-      oprot.writeFieldBegin('groupings', TType.LIST, 3)
+      oprot.writeFieldBegin('groupings', TType.LIST, 4)
       oprot.writeListBegin(TType.STRUCT, len(self.groupings))
       for iter34 in self.groupings:
         iter34.write(oprot)
@@ -825,6 +837,8 @@ class Query(object):
     oprot.writeStructEnd()
 
   def validate(self):
+    if self.table is None:
+      raise TProtocol.TProtocolException(message='Required field table is unset!')
     if self.columns is None:
       raise TProtocol.TProtocolException(message='Required field columns is unset!')
     if self.conditions is None:
