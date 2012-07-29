@@ -267,6 +267,80 @@ class ColumnSpec(object):
   def __ne__(self, other):
     return not (self == other)
 
+class Column(object):
+  """
+  Attributes:
+   - spec
+   - value
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRUCT, 'spec', (ColumnSpec, ColumnSpec.thrift_spec), None, ), # 1
+    (2, TType.STRUCT, 'value', (ColumnValue, ColumnValue.thrift_spec), None, ), # 2
+  )
+
+  def __init__(self, spec=None, value=None,):
+    self.spec = spec
+    self.value = value
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRUCT:
+          self.spec = ColumnSpec()
+          self.spec.read(iprot)
+        else:
+          iprot.skip(ftype)
+      elif fid == 2:
+        if ftype == TType.STRUCT:
+          self.value = ColumnValue()
+          self.value.read(iprot)
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('Column')
+    if self.spec is not None:
+      oprot.writeFieldBegin('spec', TType.STRUCT, 1)
+      self.spec.write(oprot)
+      oprot.writeFieldEnd()
+    if self.value is not None:
+      oprot.writeFieldBegin('value', TType.STRUCT, 2)
+      self.value.write(oprot)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
 class TableSpec(object):
   """
   Attributes:

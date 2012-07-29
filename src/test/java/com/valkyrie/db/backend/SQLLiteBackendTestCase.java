@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.valkyrie.db.gen.Aggregate;
 import com.valkyrie.db.gen.AggregateColumnSpec;
+import com.valkyrie.db.gen.Column;
 import com.valkyrie.db.gen.ColumnSpec;
 import com.valkyrie.db.gen.ColumnType;
 import com.valkyrie.db.gen.ColumnValue;
@@ -28,18 +29,25 @@ public class SQLLiteBackendTestCase extends TestCase {
 		backend.init();
 	}
 
+	public void tearDown() throws Exception {
+		backend.close();
+	}
+
 	public void testSimple() throws Exception {
-		TableSpec ts = createTableSpec();
-		backend.createTable(ts);
+		//TableSpec ts = createTableSpec();
+		String table = "foo";
+		backend.execute("create table foo ( a_int INT,b_long BIGINT,c_double FLOAT,d_string VARCHAR,e_bytes BLOB )");
 		ColumnValue cv = new ColumnValue();
 		cv.setV_int(12);
-		backend.insert(ts.getName(),
-				Arrays.asList("a_int"),
+		backend.insert(table,
+				Collections.singletonList(new Column(
+						new ColumnSpec("a_int", ColumnType.IntegerType),
+						cv)),
 				Arrays.asList(
 						new ColumnValueList(Collections.singletonList(cv))));
 		QueryResult qr = backend.select(
 				new Query(
-						ts.getName(),
+						table,
 						Arrays.asList(
 								new AggregateColumnSpec(
 										new ColumnSpec("a_int", ColumnType.IntegerType),
@@ -59,6 +67,16 @@ public class SQLLiteBackendTestCase extends TestCase {
 		assertEquals(columns.size(), 2);
 		assertEquals(columns.get(0).getValue().getV_int(), 12);
 		assertEquals(columns.get(1).getValue().getV_long(), 0);
+		backend.execute("drop table foo");
+	}
+
+	public void testSimpleTable() throws Exception {
+		createTable();
+		backend.execute("drop table foo");
+	}
+
+	private void createTable() throws Exception {
+		backend.execute("create table foo ( a_int INT,b_long BIGINT,c_double FLOAT,d_string VARCHAR,e_bytes BLOB )");
 	}
 
 	private TableSpec createTableSpec() {

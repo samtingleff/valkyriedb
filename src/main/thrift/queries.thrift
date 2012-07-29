@@ -36,6 +36,11 @@ struct ColumnSpec {
  2: required ColumnType type
 }
 
+struct Column {
+ 1: ColumnSpec spec,
+ 2: ColumnValue value
+}
+
 struct TableSpec {
  1: required string name,
  2: required list<ColumnSpec> columns
@@ -81,9 +86,8 @@ struct QueryResult {
 }
 
 service QueryService {
- void createTable(1: TableSpec table);
- void dropTable(1: string table);
- void insert(1: string table, 2: list<string> columns, 3: list<ColumnValueList> values);
+ void execute(1: string sql);
+ void insert(1: string table, 2: list<Column> columns, 3: list<ColumnValueList> values);
  QueryResult select(1: Query query);
 }
 

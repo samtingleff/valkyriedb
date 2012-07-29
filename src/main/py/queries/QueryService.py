@@ -18,17 +18,10 @@ except:
 
 
 class Iface(object):
-  def createTable(self, table):
+  def execute(self, sql):
     """
     Parameters:
-     - table
-    """
-    pass
-
-  def dropTable(self, table):
-    """
-    Parameters:
-     - table
+     - sql
     """
     pass
 
@@ -56,58 +49,30 @@ class Client(Iface):
       self._oprot = oprot
     self._seqid = 0
 
-  def createTable(self, table):
+  def execute(self, sql):
     """
     Parameters:
-     - table
+     - sql
     """
-    self.send_createTable(table)
-    self.recv_createTable()
+    self.send_execute(sql)
+    self.recv_execute()
 
-  def send_createTable(self, table):
-    self._oprot.writeMessageBegin('createTable', TMessageType.CALL, self._seqid)
-    args = createTable_args()
-    args.table = table
+  def send_execute(self, sql):
+    self._oprot.writeMessageBegin('execute', TMessageType.CALL, self._seqid)
+    args = execute_args()
+    args.sql = sql
     args.write(self._oprot)
     self._oprot.writeMessageEnd()
     self._oprot.trans.flush()
 
-  def recv_createTable(self, ):
+  def recv_execute(self, ):
     (fname, mtype, rseqid) = self._iprot.readMessageBegin()
     if mtype == TMessageType.EXCEPTION:
       x = TApplicationException()
       x.read(self._iprot)
       self._iprot.readMessageEnd()
       raise x
-    result = createTable_result()
-    result.read(self._iprot)
-    self._iprot.readMessageEnd()
-    return
-
-  def dropTable(self, table):
-    """
-    Parameters:
-     - table
-    """
-    self.send_dropTable(table)
-    self.recv_dropTable()
-
-  def send_dropTable(self, table):
-    self._oprot.writeMessageBegin('dropTable', TMessageType.CALL, self._seqid)
-    args = dropTable_args()
-    args.table = table
-    args.write(self._oprot)
-    self._oprot.writeMessageEnd()
-    self._oprot.trans.flush()
-
-  def recv_dropTable(self, ):
-    (fname, mtype, rseqid) = self._iprot.readMessageBegin()
-    if mtype == TMessageType.EXCEPTION:
-      x = TApplicationException()
-      x.read(self._iprot)
-      self._iprot.readMessageEnd()
-      raise x
-    result = dropTable_result()
+    result = execute_result()
     result.read(self._iprot)
     self._iprot.readMessageEnd()
     return
@@ -179,8 +144,7 @@ class Processor(Iface, TProcessor):
   def __init__(self, handler):
     self._handler = handler
     self._processMap = {}
-    self._processMap["createTable"] = Processor.process_createTable
-    self._processMap["dropTable"] = Processor.process_dropTable
+    self._processMap["execute"] = Processor.process_execute
     self._processMap["insert"] = Processor.process_insert
     self._processMap["select"] = Processor.process_select
 
@@ -199,24 +163,13 @@ class Processor(Iface, TProcessor):
       self._processMap[name](self, seqid, iprot, oprot)
     return True
 
-  def process_createTable(self, seqid, iprot, oprot):
-    args = createTable_args()
+  def process_execute(self, seqid, iprot, oprot):
+    args = execute_args()
     args.read(iprot)
     iprot.readMessageEnd()
-    result = createTable_result()
-    self._handler.createTable(args.table)
-    oprot.writeMessageBegin("createTable", TMessageType.REPLY, seqid)
-    result.write(oprot)
-    oprot.writeMessageEnd()
-    oprot.trans.flush()
-
-  def process_dropTable(self, seqid, iprot, oprot):
-    args = dropTable_args()
-    args.read(iprot)
-    iprot.readMessageEnd()
-    result = dropTable_result()
-    self._handler.dropTable(args.table)
-    oprot.writeMessageBegin("dropTable", TMessageType.REPLY, seqid)
+    result = execute_result()
+    self._handler.execute(args.sql)
+    oprot.writeMessageBegin("execute", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -246,122 +199,19 @@ class Processor(Iface, TProcessor):
 
 # HELPER FUNCTIONS AND STRUCTURES
 
-class createTable_args(object):
+class execute_args(object):
   """
   Attributes:
-   - table
+   - sql
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRUCT, 'table', (TableSpec, TableSpec.thrift_spec), None, ), # 1
+    (1, TType.STRING, 'sql', None, None, ), # 1
   )
 
-  def __init__(self, table=None,):
-    self.table = table
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      if fid == 1:
-        if ftype == TType.STRUCT:
-          self.table = TableSpec()
-          self.table.read(iprot)
-        else:
-          iprot.skip(ftype)
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('createTable_args')
-    if self.table is not None:
-      oprot.writeFieldBegin('table', TType.STRUCT, 1)
-      self.table.write(oprot)
-      oprot.writeFieldEnd()
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class createTable_result(object):
-
-  thrift_spec = (
-  )
-
-  def read(self, iprot):
-    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
-      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
-      return
-    iprot.readStructBegin()
-    while True:
-      (fname, ftype, fid) = iprot.readFieldBegin()
-      if ftype == TType.STOP:
-        break
-      else:
-        iprot.skip(ftype)
-      iprot.readFieldEnd()
-    iprot.readStructEnd()
-
-  def write(self, oprot):
-    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
-      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
-      return
-    oprot.writeStructBegin('createTable_result')
-    oprot.writeFieldStop()
-    oprot.writeStructEnd()
-
-  def validate(self):
-    return
-
-
-  def __repr__(self):
-    L = ['%s=%r' % (key, value)
-      for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
-
-  def __eq__(self, other):
-    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-  def __ne__(self, other):
-    return not (self == other)
-
-class dropTable_args(object):
-  """
-  Attributes:
-   - table
-  """
-
-  thrift_spec = (
-    None, # 0
-    (1, TType.STRING, 'table', None, None, ), # 1
-  )
-
-  def __init__(self, table=None,):
-    self.table = table
+  def __init__(self, sql=None,):
+    self.sql = sql
 
   def read(self, iprot):
     if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
@@ -374,7 +224,7 @@ class dropTable_args(object):
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.table = iprot.readString();
+          self.sql = iprot.readString();
         else:
           iprot.skip(ftype)
       else:
@@ -386,10 +236,10 @@ class dropTable_args(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('dropTable_args')
-    if self.table is not None:
-      oprot.writeFieldBegin('table', TType.STRING, 1)
-      oprot.writeString(self.table)
+    oprot.writeStructBegin('execute_args')
+    if self.sql is not None:
+      oprot.writeFieldBegin('sql', TType.STRING, 1)
+      oprot.writeString(self.sql)
       oprot.writeFieldEnd()
     oprot.writeFieldStop()
     oprot.writeStructEnd()
@@ -409,7 +259,7 @@ class dropTable_args(object):
   def __ne__(self, other):
     return not (self == other)
 
-class dropTable_result(object):
+class execute_result(object):
 
   thrift_spec = (
   )
@@ -432,7 +282,7 @@ class dropTable_result(object):
     if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
-    oprot.writeStructBegin('dropTable_result')
+    oprot.writeStructBegin('execute_result')
     oprot.writeFieldStop()
     oprot.writeStructEnd()
 
@@ -462,7 +312,7 @@ class insert_args(object):
   thrift_spec = (
     None, # 0
     (1, TType.STRING, 'table', None, None, ), # 1
-    (2, TType.LIST, 'columns', (TType.STRING,None), None, ), # 2
+    (2, TType.LIST, 'columns', (TType.STRUCT,(Column, Column.thrift_spec)), None, ), # 2
     (3, TType.LIST, 'values', (TType.STRUCT,(ColumnValueList, ColumnValueList.thrift_spec)), None, ), # 3
   )
 
@@ -490,7 +340,8 @@ class insert_args(object):
           self.columns = []
           (_etype52, _size49) = iprot.readListBegin()
           for _i53 in xrange(_size49):
-            _elem54 = iprot.readString();
+            _elem54 = Column()
+            _elem54.read(iprot)
             self.columns.append(_elem54)
           iprot.readListEnd()
         else:
@@ -522,9 +373,9 @@ class insert_args(object):
       oprot.writeFieldEnd()
     if self.columns is not None:
       oprot.writeFieldBegin('columns', TType.LIST, 2)
-      oprot.writeListBegin(TType.STRING, len(self.columns))
+      oprot.writeListBegin(TType.STRUCT, len(self.columns))
       for iter61 in self.columns:
-        oprot.writeString(iter61)
+        iter61.write(oprot)
       oprot.writeListEnd()
       oprot.writeFieldEnd()
     if self.values is not None:

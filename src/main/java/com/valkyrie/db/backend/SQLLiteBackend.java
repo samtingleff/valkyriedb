@@ -8,11 +8,11 @@ import java.util.Map;
 
 import org.apache.thrift.TException;
 
-import com.almworks.sqlite4java.SQLParts;
 import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.valkyrie.db.gen.AggregateColumnSpec;
+import com.valkyrie.db.gen.Column;
 import com.valkyrie.db.gen.ColumnSpec;
 import com.valkyrie.db.gen.ColumnType;
 import com.valkyrie.db.gen.ColumnValue;
@@ -60,30 +60,18 @@ public class SQLLiteBackend implements StorageBackend {
 		db.dispose();
 	}
 
+
 	@Override
-	public void createTable(TableSpec table) throws TException {
-		String stmt = compileTableSpec(table);
+	public void execute(String sql) throws TException {
 		try {
-			System.out.println(stmt);
-			execute(stmt);
-		tables.create(table);
+			doExecute(sql);
 		} catch (SQLiteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TableMetadataError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally { }
+			throw new TException(e);
+		}
 	}
 
 	@Override
-	public void dropTable(String table) throws TException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void insert(String table, List<String> columns,
+	public void insert(String table, List<Column> columns,
 			List<ColumnValueList> values) throws TException {
 		try {
 		SQLiteStatement stmt = prepareInsert(table, columns, values);
@@ -92,9 +80,11 @@ public class SQLLiteBackend implements StorageBackend {
 			List<ColumnValue> cvs = row.getValues();
 			int index = 0;
 			for (ColumnValue cv : cvs) {
-				String column = columns.get(index);
-				ColumnType ct = tables.getColumnType(table, column);
-				bind(stmt, index + 1, ct, cv);
+				ColumnSpec cs = columns.get(index).getSpec();
+
+				String column = columns.get(index).getSpec().getColumn();
+				//ColumnType ct = tables.getColumnType(table, column);
+				bind(stmt, index + 1, cs.getType(), cv);
 				++index;
 			}
 			stmt.step();
@@ -222,21 +212,21 @@ public class SQLLiteBackend implements StorageBackend {
 		sb.append(")");*/
 		String sql = sb.toString();
 		System.out.println(sql);
-		SQLiteStatement ps = db.prepare(sql);
+		SQLiteStatement ps = db.prepare(sql, false);
 		return ps;
 	}
 
-	private SQLiteStatement prepareInsert(String table, List<String> columns,
+	private SQLiteStatement prepareInsert(String table, List<Column> columns,
 			List<ColumnValueList> values) throws SQLiteException, TableMetadataError {
 		StringBuffer sb = new StringBuffer();
 		sb.append("insert into ");
 		sb.append(table);
 		sb.append(" (");
 		int index = 0;
-		for (String column : columns) {
+		for (Column column : columns) {
 			if (index != 0)
 				sb.append(',');
-			sb.append(column);
+			sb.append(column.getSpec().getColumn());
 			++index;
 		}
 		sb.append(") values (");
@@ -256,7 +246,7 @@ public class SQLLiteBackend implements StorageBackend {
 		return sqlTypes.get(type);
 	}
 
-	private void execute(String stmt) throws SQLiteException {
+	private void doExecute(String stmt) throws SQLiteException {
 		db.exec(stmt);
 	}
 }
