@@ -115,7 +115,7 @@ public class SQLLiteBackend implements StorageBackend {
 		try {
 			List<Row> rows = new ArrayList<Row>();
 			List<AggregateColumnSpec> columns = query.getColumns();
-			SQLiteStatement st = prepareSelect(query.getTable(), columns);
+			SQLiteStatement st = prepareSelect(query);
 			while (st.step()) {
 				Row row = new Row();
 				int count = st.columnCount();
@@ -200,18 +200,18 @@ public class SQLLiteBackend implements StorageBackend {
 		return sb.toString();
 	}
 
-	private SQLiteStatement prepareSelect(String table, List<AggregateColumnSpec> columns) throws SQLiteException, TableMetadataError {
+	private SQLiteStatement prepareSelect(Query query) throws SQLiteException, TableMetadataError {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select ");
 		int index = 0;
-		for (AggregateColumnSpec column : columns) {
+		for (AggregateColumnSpec column : query.getColumns()) {
 			if (index != 0)
 				sb.append(',');
 			sb.append(column.getColumn().getColumn());
 			++index;
 		}
 		sb.append(" from ");
-		sb.append(table);
+		sb.append(query.getTable());
 		/*sb.append(" (");
 		sb.append(") values (");
 		for (int i = 0 ; i < index; ++i) {
